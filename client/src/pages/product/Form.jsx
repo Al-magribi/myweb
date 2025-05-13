@@ -81,7 +81,7 @@ const Form = ({ product }) => {
         <div className='modal-content'>
           <div className='modal-header'>
             <h1 className='modal-title fs-5' id='staticBackdropLabel'>
-              Proses Pemesanan
+              Customer Details
             </h1>
             <button
               type='button'
@@ -96,39 +96,39 @@ const Form = ({ product }) => {
                 <input
                   type='text'
                   className='form-control'
-                  placeholder='Nama Lengkap'
+                  placeholder='Full Name'
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                 />
-                <label htmlFor='name'>Nama</label>
+                <label htmlFor='name'>Full Name</label>
               </div>
 
               <div className='form-floating'>
                 <input
                   type='email'
                   className='form-control'
-                  placeholder='Email'
+                  placeholder='Email Address'
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
                 />
-                <label htmlFor='email'>Email</label>
+                <label htmlFor='email'>Email Address</label>
               </div>
 
               <div className='form-floating'>
                 <input
                   type='text'
                   className='form-control'
-                  placeholder='Nomor Whatsapp'
+                  placeholder='Whatsapp'
                   value={formData.phone}
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })
                   }
                 />
-                <label htmlFor='phone'>Nomor Whatsapp</label>
+                <label htmlFor='phone'>Whatsapp</label>
               </div>
             </div>
           </div>
@@ -138,14 +138,14 @@ const Form = ({ product }) => {
               className='btn btn-outline-danger'
               data-bs-dismiss='modal'
               onClick={handleClose}>
-              Batal
+              Cancel
             </button>
             <button
               type='button'
               className='btn btn-primary'
               disabled={isLoading}
               onClick={handleSubmit}>
-              Proses Pemesanan
+              Process Order
             </button>
           </div>
         </div>

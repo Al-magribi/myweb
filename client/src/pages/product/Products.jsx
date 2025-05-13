@@ -54,6 +54,8 @@ const Products = () => {
     setPage(newPage);
   };
 
+  const start = 240;
+
   if (isLoading) {
     return (
       <Fragment>
@@ -139,7 +141,10 @@ const Products = () => {
 
                   <div className='text-success mb-3'>
                     <i className='bi bi-graph-up-arrow me-1'></i>
-                    {Number(product?.totalsales + 240)} sold
+                    {(Number(product?.totalsales) + start).toLocaleString(
+                      "id-ID"
+                    )}{" "}
+                    sold
                   </div>
 
                   <Link

@@ -53,6 +53,8 @@ const Detail = () => {
     return stars;
   };
 
+  const start = 240;
+
   const renderRatingBar = (stars, count, totalReviews) => {
     const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
     return (
@@ -181,7 +183,10 @@ const Detail = () => {
 
             <div className='text-success mb-4'>
               <i className='bi bi-graph-up-arrow me-1'></i>
-              {Number(product?.totalsales + 240).toLocaleString("id-ID")} sold
+              {(Number(product?.totalsales) + start).toLocaleString(
+                "id-ID"
+              )}{" "}
+              sold
             </div>
 
             <div

@@ -6,13 +6,13 @@ import MetaPixel from "./components/MetaPixel/MetaPixel";
 
 import Home from "./pages/Home/Home";
 import Auth from "./pages/auth/Auth";
-
 const Edubyte = lazy(() => import("./pages/EduByte/Edubtye"));
 const Course = lazy(() => import("./pages/course/Course"));
 const Fswd = lazy(() => import("./pages/course/Fswd"));
 const Ecom = lazy(() => import("./pages/course/Ecom"));
 const Products = lazy(() => import("./pages/product/Products"));
 const Detail = lazy(() => import("./pages/product/Detail"));
+import Status from "./pages/product/Status";
 
 // admin
 const AdminDash = lazy(() => import("./pages/admin/dashboard/AdminDash"));
@@ -83,6 +83,8 @@ const App = () => {
           <Route path='/products' element={<Products />} />
 
           <Route path='/product/:id' element={<Detail />} />
+
+          <Route path='/product/:id/status' element={<Status />} />
 
           {/* Admin Routes */}
           <Route path='/admin' element={<AdminDash />} />
