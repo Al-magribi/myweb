@@ -19,7 +19,7 @@ router.get("/stats", async (req, res) => {
     const ordersStats = await client.query(`
       SELECT 
         COUNT(*) as total_orders,
-        COALESCE(SUM(total_amount), 0) as total_revenue
+        COALESCE(SUM(CASE WHEN status = 'settlement' THEN total_amount ELSE 0 END), 0) as total_revenue
       FROM orders
     `);
 
