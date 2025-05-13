@@ -1,0 +1,502 @@
+[
+  {
+    "nama": "Daru Pratama",
+    "rating": 4.9,
+    "review": "Setiap contoh prompt-nya kepake semua di dunia nyata."
+  },
+  {
+    "nama": "Sutan Kemba Pranowo",
+    "rating": 4.3,
+    "review": "Gue jadi bisa deliver kerjaan lebih cepet dari tim lain."
+  },
+  {
+    "nama": "Raden Halimah",
+    "rating": 4.8,
+    "review": "Buku ini bukan cuma ngajarin cara nanya, tapi cara mikir ulang."
+  },
+  {
+    "nama": "Bakiono Wibisono",
+    "rating": 4.4,
+    "review": "Lebih berani mulai ide baru karena tahu AI bisa back-up gue."
+  },
+  {
+    "nama": "Rahmi Tarihoran",
+    "rating": 4.4,
+    "review": "Gue pake buat ngajar, hasilnya jauh lebih interaktif sekarang."
+  },
+  {
+    "nama": "Anggabaya Damanik",
+    "rating": 4.9,
+    "review": "Buku ini bikin gue gak takut eksplorasi ide liar."
+  },
+  {
+    "nama": "Akarsana Uyainah",
+    "rating": 4.9,
+    "review": "Buku ini ngajarin cara ngajak AI ‘kerja sama’ bukan ‘nyuruh’ doang."
+  },
+  {
+    "nama": "Nardi Puspita",
+    "rating": 4.6,
+    "review": "Prompt bukan lagi hal susah setelah baca ini."
+  },
+  {
+    "nama": "Aditya Fujiati",
+    "rating": 4.9,
+    "review": "Mata gue kebuka: ternyata gue nanya ke AI selama ini salah arah."
+  },
+  {
+    "nama": "Violet Yolanda",
+    "rating": 4.2,
+    "review": "Beli buku ini bukan pengeluaran. Ini investasi."
+  },
+  {
+    "nama": "Hasim Zulkarnain",
+    "rating": 4.4,
+    "review": "Tanpa sadar, buku ini juga ngajarin cara jadi komunikator yang lebih baik."
+  },
+  {
+    "nama": "Lamar Haryanti",
+    "rating": 4.2,
+    "review": "Dulu bingung nanya ke ChatGPT, sekarang udah kayak punya asisten pribadi."
+  },
+  {
+    "nama": "Darmanto Zulaika",
+    "rating": 4.9,
+    "review": "Tiap role dapet bagian: guru, marketing, developer—semua relate."
+  },
+  {
+    "nama": "Zalindra Nasyiah",
+    "rating": 4.0,
+    "review": "Framework-nya bisa di-mix & match, fleksibel banget."
+  },
+  {
+    "nama": "Mila Firmansyah",
+    "rating": 4.2,
+    "review": "Gak cuma ngerti AI, tapi ngerti manusia juga."
+  },
+  {
+    "nama": "Agus Setiawan",
+    "rating": 4.0,
+    "review": "Sekarang gue bisa produce lebih banyak, dengan tenaga lebih sedikit."
+  },
+  {
+    "nama": "Vera Hasanah",
+    "rating": 4.8,
+    "review": "Akhirnya ngerti kenapa prompt gue dulu gak pernah berhasil."
+  },
+  {
+    "nama": "Chelsea Hassanah",
+    "rating": 4.6,
+    "review": "Gak ada isinya yang mubazir. Full daging semua."
+  },
+  {
+    "nama": "Xanana Yuliarti",
+    "rating": 4.0,
+    "review": "Udah banyak baca buku AI, tapi ini yang paling membumi."
+  },
+  {
+    "nama": "Ana Sitompul",
+    "rating": 4.1,
+    "review": "Top banget! Ini buku AI pertama yang relatable buat orang Indonesia."
+  },
+  {
+    "nama": "Sarah Lestari",
+    "rating": 4.1,
+    "review": "Satu kata: mind-blowing. Gak nyesel beli."
+  },
+  {
+    "nama": "Jaya Hasanah",
+    "rating": 4.7,
+    "review": "Buku ini ngasih gue kepercayaan diri buat eksplorasi ide tanpa takut salah."
+  },
+  {
+    "nama": "Eka Rajasa",
+    "rating": 4.7,
+    "review": "Gue jadi ngerti pola pikir di balik pertanyaan yang efektif."
+  },
+  {
+    "nama": "Catur Hasanah",
+    "rating": 4.6,
+    "review": "Isi bukunya kayak ‘alat tempur’ buat digital age."
+  },
+  {
+    "nama": "Sakti Nugroho",
+    "rating": 4.1,
+    "review": "Dari skeptis, sekarang jadi evangelist AI di kantor."
+  },
+  {
+    "nama": "Karimah Saragih",
+    "rating": 4.9,
+    "review": "Buku ini bikin gue sadar: AI itu bukan saingan, tapi partner."
+  },
+  {
+    "nama": "Alika Nainggolan",
+    "rating": 4.4,
+    "review": "Pas banget buat era serba cepat dan serba multitasking."
+  },
+  {
+    "nama": "Ibun Natsir",
+    "rating": 4.3,
+    "review": "Tiap kali gue stuck, framework di buku ini bantu buka jalan."
+  },
+  {
+    "nama": "Jabal Mandala",
+    "rating": 4.1,
+    "review": "Framework ini semacam ‘jurus ninja’ buat survive di era sekarang."
+  },
+  {
+    "nama": "Panca Kurniawan",
+    "rating": 4.8,
+    "review": "Framework-nya bikin AI kerasa kayak alat sulap modern."
+  },
+  {
+    "nama": "Bakiadi Widiastuti",
+    "rating": 4.4,
+    "review": "Bisa dipakai harian banget. Gak cuma sekali terus lupa."
+  },
+  {
+    "nama": "Kurnia Wahyudin",
+    "rating": 4.6,
+    "review": "Framework-nya bikin gue ngerti ‘struktur mikir’ yang bisa dibaca AI."
+  },
+  {
+    "nama": "Kasiyah Hardiansyah",
+    "rating": 4.6,
+    "review": "Nanya ke AI sekarang jadi skill, dan buku ini ngajarin ilmunya."
+  },
+  {
+    "nama": "Nadine Pudjiastuti",
+    "rating": 4.7,
+    "review": "Berasa punya peta di dunia AI yang sebelumnya gelap buat gue."
+  },
+  {
+    "nama": "Azalea Haryanti",
+    "rating": 4.2,
+    "review": "Kerasa banget perbedaannya sebelum dan sesudah baca buku ini."
+  },
+  {
+    "nama": "Wisnu Halim",
+    "rating": 4.7,
+    "review": "Gue ngerasa lebih produktif tanpa harus kerja lebih lama."
+  },
+  {
+    "nama": "Emin Agustina",
+    "rating": 4.5,
+    "review": "Gue lebih bisa ngarahin AI ke output yang gue mau."
+  },
+  {
+    "nama": "Purwa Tamba",
+    "rating": 4.7,
+    "review": "Kalo semua orang baca ini, dunia kerja bakal jauh lebih efisien."
+  },
+  {
+    "nama": "Rosman Mulyani",
+    "rating": 4.2,
+    "review": "Framework-nya praktis banget, langsung bisa dipakai untuk kerjaan sehari-hari."
+  },
+  {
+    "nama": "Shania Dongoran",
+    "rating": 4.4,
+    "review": "Dijelasin pelan-pelan, tapi to the point. Cocok buat pemula."
+  },
+  {
+    "nama": "Emil Agustina",
+    "rating": 4.3,
+    "review": "Kaya banget ilmunya, tapi gak bikin mumet."
+  },
+  {
+    "nama": "Hani Lazuardi",
+    "rating": 4.0,
+    "review": "Framework-nya bikin gue makin tajam mikir dan nulis."
+  },
+  {
+    "nama": "Kala Mulyani",
+    "rating": 4.3,
+    "review": "Kalo semua guru baca ini, sistem belajar bakal berubah banyak."
+  },
+  {
+    "nama": "Adhiarja Prakasa",
+    "rating": 4.5,
+    "review": "Buku ini ngajarin cara mikir strategis, bukan cuma operatif."
+  },
+  {
+    "nama": "Yosef Maryadi",
+    "rating": 4.7,
+    "review": "Gak banyak teori, langsung praktik. Itu yang paling gue suka."
+  },
+  {
+    "nama": "Salimah Januar",
+    "rating": 4.3,
+    "review": "Setiap halaman berasa kayak ditampar halus—tajem tapi bikin sadar."
+  },
+  {
+    "nama": "Reksa Najmudin",
+    "rating": 4.0,
+    "review": "Gak perlu ngerti teknikal, yang penting ngerti tujuan. Buku ini ngajarin itu."
+  },
+  {
+    "nama": "Lanjar Waskita",
+    "rating": 4.5,
+    "review": "Buat guru kayak gue, buku ini life-saver banget buat bikin materi ajar."
+  },
+  {
+    "nama": "Carla Latupono",
+    "rating": 4.2,
+    "review": "Setiap bab rasanya kayak upgrade skill tanpa harus ikut workshop."
+  },
+  {
+    "nama": "Lanang Sitorus",
+    "rating": 5.0,
+    "review": "Gue bisa ngerjain 3x lebih banyak hal setelah pakai teknik di buku ini."
+  },
+  {
+    "nama": "Ir. Rachel Marbun",
+    "rating": 4.3,
+    "review": "Gak nyangka belajar AI bisa seseru ini."
+  },
+  {
+    "nama": "Queen Kuswandari",
+    "rating": 4.9,
+    "review": "Investasi kecil, tapi impact-nya gede buat kerjaan gue."
+  },
+  {
+    "nama": "Tgk. Pangestu Mulyani",
+    "rating": 4.3,
+    "review": "Setiap bab nambah kepercayaan diri buat eksplor tools digital."
+  },
+  {
+    "nama": "Aisyah Rajasa",
+    "rating": 5.0,
+    "review": "Sekarang gue kerja bareng AI kayak punya partner tim yang ngerti."
+  },
+  {
+    "nama": "Violet Sihombing",
+    "rating": 5.0,
+    "review": "AI jadi terasa lebih manusiawi gara-gara cara komunikasinya dibenerin."
+  },
+  {
+    "nama": "Cinthia Wahyuni",
+    "rating": 4.3,
+    "review": "Bisa langsung praktik dari bab pertama. Gak perlu nunggu tamat."
+  },
+  {
+    "nama": "Adika Adriansyah",
+    "rating": 4.2,
+    "review": "Kayak dikasih remote control buat otak digital bernama AI."
+  },
+  {
+    "nama": "Hari Saputra",
+    "rating": 4.1,
+    "review": "Recommended banget buat siapa pun yang mau adaptif di era sekarang."
+  },
+  {
+    "nama": "Yance Palastri",
+    "rating": 4.9,
+    "review": "Bikin prompt kayak nyusun puzzle sekarang. Ada polanya."
+  },
+  {
+    "nama": "Johan Laksmiwati",
+    "rating": 4.2,
+    "review": "Ini buku, tapi rasanya kayak punya mentor pribadi."
+  },
+  {
+    "nama": "Ganep Thamrin",
+    "rating": 4.8,
+    "review": "Baru bab awal aja udah langsung kerasa bedanya pas ngetik prompt."
+  },
+  {
+    "nama": "Sutan Atmaja Agustina",
+    "rating": 4.9,
+    "review": "Sekarang gue bisa bikin strategi marketing dalam 10 menit. Gila sih."
+  },
+  {
+    "nama": "Ismail Sudiati",
+    "rating": 4.3,
+    "review": "Simple, padat, dan penuh insight yang langsung bisa gue pake."
+  },
+  {
+    "nama": "Fitria Hutagalung",
+    "rating": 4.4,
+    "review": "Sekarang gue bisa bikin kode dasar tanpa buka Stack Overflow tiap menit."
+  },
+  {
+    "nama": "Endra Suwarno",
+    "rating": 4.7,
+    "review": "Kombinasi antara inspiratif dan teknis yang pas banget."
+  },
+  {
+    "nama": "Hani Zulkarnain",
+    "rating": 4.1,
+    "review": "Framework-nya bikin komunikasi ke AI jadi jelas dan fokus."
+  },
+  {
+    "nama": "Opan Wibisono",
+    "rating": 4.4,
+    "review": "Gue jadi lebih pede bikin konten, bikin kode, bahkan bikin modul ngajar."
+  },
+  {
+    "nama": "Kawaya Susanti",
+    "rating": 4.5,
+    "review": "Kalau kamu marketer, guru, atau programmer, buku ini wajib punya!"
+  },
+  {
+    "nama": "Vicky Nuraini",
+    "rating": 4.7,
+    "review": "Tadinya skeptis, tapi sekarang malah ketagihan eksplorasi ide pakai AI."
+  },
+  {
+    "nama": "Irwan Susanti",
+    "rating": 4.4,
+    "review": "Gue pengen semua tim gue baca buku ini juga."
+  },
+  {
+    "nama": "Fitria Tamba",
+    "rating": 4.1,
+    "review": "Akhirnya ada buku AI yang relevan sama konteks kerja di Indonesia."
+  },
+  {
+    "nama": "Raina Handayani",
+    "rating": 4.3,
+    "review": "Kerasa banget penulisnya emang make sendiri, bukan sekadar nulis."
+  },
+  {
+    "nama": "Tina Rajasa",
+    "rating": 4.7,
+    "review": "Isi bukunya bikin semangat eksplor dan terus belajar."
+  },
+  {
+    "nama": "Dariati Rahayu",
+    "rating": 4.6,
+    "review": "Bisa bantu brainstorming juga, bukan cuma eksekusi."
+  },
+  {
+    "nama": "Cut Siska Laksita",
+    "rating": 4.4,
+    "review": "Gak cuma ngajarin cara nanya, tapi cara mikir juga dibentuk."
+  },
+  {
+    "nama": "Gatra Handayani",
+    "rating": 4.2,
+    "review": "Buat content creator, ini buku sakti."
+  },
+  {
+    "nama": "Dian Halim",
+    "rating": 4.2,
+    "review": "Efek baca buku ini: waktu kerja gue jadi jauh lebih efisien."
+  },
+  {
+    "nama": "Zelaya Hutagalung",
+    "rating": 4.1,
+    "review": "Ngajarin AI kayak ngajarin partner kerja. Bukan cuma mesin."
+  },
+  {
+    "nama": "Salsabila Melani",
+    "rating": 4.9,
+    "review": "Gaya bahasanya santai tapi dalam. Gak ngebosenin sama sekali."
+  },
+  {
+    "nama": "Rini Saptono",
+    "rating": 4.2,
+    "review": "Framework-nya simpel, tapi impactful banget."
+  },
+  {
+    "nama": "Salsabila Pratama",
+    "rating": 4.4,
+    "review": "Gue gak nyangka bisa bikin konten sekeren ini cuma dari prompt yang diajarin di buku."
+  },
+  {
+    "nama": "Drs. Mila Kusumo",
+    "rating": 4.6,
+    "review": "Buku ini ngajarin lo kerja cerdas, bukan keras."
+  },
+  {
+    "nama": "Purwadi Simbolon",
+    "rating": 4.5,
+    "review": "Satu buku—tapi hasilnya kerasa di banyak sisi hidup gue."
+  },
+  {
+    "nama": "Mila Halimah",
+    "rating": 4.9,
+    "review": "Framework-nya ngubah cara gue mikir soal komunikasi dengan AI."
+  },
+  {
+    "nama": "Cindy Laksmiwati",
+    "rating": 4.3,
+    "review": "Buku ini bikin gue ngulik AI lebih dalam tanpa takut pusing."
+  },
+  {
+    "nama": "Argono Natsir",
+    "rating": 4.1,
+    "review": "Gue gak nyangka bisa dapet insight sebanyak ini dari satu buku."
+  },
+  {
+    "nama": "Luhung Gunawan",
+    "rating": 4.1,
+    "review": "Framework-nya adaptif, bisa disesuaikan sama apapun kerjaan gue."
+  },
+  {
+    "nama": "Indah Haryanti",
+    "rating": 5.0,
+    "review": "Udah lama cari buku kayak gini—akhirnya ketemu juga."
+  },
+  {
+    "nama": "Salimah Wasita",
+    "rating": 4.9,
+    "review": "Desain bukunya simpel tapi isi kontennya luar biasa!"
+  },
+  {
+    "nama": "Wulan Saragih",
+    "rating": 4.7,
+    "review": "Framework-nya nempel di kepala, gampang diingat dan dipakai."
+  },
+  {
+    "nama": "Aris Irawan",
+    "rating": 4.7,
+    "review": "Lo gak akan liat AI dengan cara yang sama lagi setelah baca buku ini."
+  },
+  {
+    "nama": "Prayogo Hassanah",
+    "rating": 4.4,
+    "review": "Setiap prompt-nya tajam. Berasa kayak skill baru nempel di otak."
+  },
+  {
+    "nama": "Dina Budiyanto",
+    "rating": 4.5,
+    "review": "Buku ini kayak ‘cheatcode’ buat kerjaan digital gue."
+  },
+  {
+    "nama": "Ami Anggriawan",
+    "rating": 4.8,
+    "review": "Copywriting gue naik level gara-gara contoh prompt di buku ini."
+  },
+  {
+    "nama": "Margana Gunawan",
+    "rating": 4.3,
+    "review": "AI kayak punya kompas baru setelah baca ini."
+  },
+  {
+    "nama": "Laras Wijayanti",
+    "rating": 4.7,
+    "review": "Promosi produk gue lebih tajam karena prompt dari buku ini."
+  },
+  {
+    "nama": "Darijan Anggraini",
+    "rating": 4.9,
+    "review": "Ngebantu banget buat yang kerja serabutan di dunia digital."
+  },
+  {
+    "nama": "Zahra Haryanto",
+    "rating": 4.6,
+    "review": "Buku ini ngasih gue senjata buat kerja lebih cepet dan hasil lebih rapi."
+  },
+  {
+    "nama": "Farhunnisa Wibowo",
+    "rating": 4.0,
+    "review": "Makasih penulisnya udah bikin topik serumit ini jadi gampang dicerna."
+  },
+  {
+    "nama": "Karimah Suwarno",
+    "rating": 4.1,
+    "review": "Gue ngerasa lebih ‘punya arah’ dalam setiap diskusi sama AI."
+  }
+]
