@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://jadidalmargibi.com/sitemap.xml
+
+# Disallow admin routes
+Disallow: /admin/
+Disallow: /admin/*
+
+# Disallow auth routes
+Disallow: /auth
+
+# Allow product routes
+Allow: /products
+Allow: /product/* 

@@ -18,7 +18,7 @@ router.get("/stats", async (req, res) => {
     // Get total orders and revenue
     const ordersStats = await client.query(`
       SELECT 
-        COUNT(*) as total_orders,
+        COUNT(CASE WHEN status = 'settlement' THEN 1 END) as total_orders,
         COALESCE(SUM(CASE WHEN status = 'settlement' THEN total_amount ELSE 0 END), 0) as total_revenue
       FROM orders
     `);
@@ -58,6 +58,7 @@ router.get("/stats", async (req, res) => {
         totalUsers: parseInt(usersCount.rows[0].count),
         totalProducts: parseInt(productsCount.rows[0].count),
         totalOrders: parseInt(ordersStats.rows[0].total_orders),
+        settledOrders: parseInt(ordersStats.rows[0].settled_orders),
         totalRevenue: parseFloat(ordersStats.rows[0].total_revenue),
       },
       recentOrders: recentOrders.rows,

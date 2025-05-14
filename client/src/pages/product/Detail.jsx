@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
+import SEO from "../../components/SEO/SEO";
 import {
   useGetProductByIdQuery,
   useGetProductReviewsQuery,
@@ -29,6 +30,55 @@ const Detail = () => {
     page: reviewPage,
     limit: reviewLimit,
   });
+
+  const seoData = product
+    ? {
+        title: product.name,
+        description: product.description?.replace(/<[^>]*>/g, "").slice(0, 160),
+        keywords: `${
+          product.name
+        }, web development, online course, ${product.features?.join(", ")}`,
+        ogTitle: product.name,
+        ogDescription: product.description
+          ?.replace(/<[^>]*>/g, "")
+          .slice(0, 160),
+        ogImage: product.image,
+        structuredData: {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          description: product.description?.replace(/<[^>]*>/g, ""),
+          image: product.image,
+          offers: {
+            "@type": "Offer",
+            price: product.price,
+            priceCurrency: "IDR",
+            availability: "https://schema.org/InStock",
+            url: window.location.href,
+          },
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.rating || "0",
+            reviewCount: product.reviewcount || "0",
+          },
+          review: reviewData?.reviews?.map((review) => ({
+            "@type": "Review",
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: review.rating,
+            },
+            author: {
+              "@type": "Person",
+              name: review.name,
+            },
+            reviewBody: review.comment,
+          })),
+        },
+      }
+    : {
+        title: "Loading Product - ALMADEV",
+        description: "Loading product details...",
+      };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -80,8 +130,7 @@ const Detail = () => {
 
   return (
     <div className='bg-light'>
-      <title>{product?.name}</title>
-      <meta name='description' content={product?.description} />
+      <SEO {...seoData} />
       <Navbar />
       <main className='container py-4' style={{ marginTop: 80 }}>
         <div className='row'>

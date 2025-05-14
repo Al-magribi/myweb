@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../../controller/api/admin/ApiProduct";
 
 const Status = () => {
-  const { id } = useParams();
+  const { id, name } = useParams();
   const [searchParams] = useSearchParams();
   const transactionStatus = searchParams.get("transaction_status");
   const orderId = searchParams.get("order_id");
@@ -106,7 +106,9 @@ const Status = () => {
 
                   {/* Action Button */}
                   <div className='text-center'>
-                    <a href={`/product/${id}`} className='btn btn-primary px-4'>
+                    <a
+                      href={`/product/${id}/${name}`}
+                      className='btn btn-primary px-4'>
                       Back
                     </a>
                   </div>

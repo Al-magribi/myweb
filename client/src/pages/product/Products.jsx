@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
+import SEO from "../../components/SEO/SEO";
 import { Link } from "react-router-dom";
 import { useGetProductsQuery } from "../../controller/api/admin/ApiProduct";
 
@@ -56,12 +57,43 @@ const Products = () => {
 
   const start = 240;
 
+  const seoData = {
+    title: "Products - ALMADEV",
+    description:
+      "Explore our collection of professional web development courses and tools. Find the perfect resources to advance your development skills.",
+    keywords:
+      "web development courses, programming tools, online learning, development resources",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement: products?.map((product, index) => ({
+        "@type": "Product",
+        position: index + 1,
+        name: product.name,
+        description: product.description,
+        image: product.image,
+        offers: {
+          "@type": "Offer",
+          price: product.price,
+          priceCurrency: "IDR",
+          availability: "https://schema.org/InStock",
+        },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: product.rating || "0",
+          reviewCount: product.reviewCount || "0",
+        },
+      })),
+    },
+  };
+
   if (isLoading) {
     return (
       <Fragment>
+        <SEO title='Loading Products - ALMADEV' />
         <Navbar />
         <main style={{ marginTop: 80 }} className='container py-3'>
-          <div className='text-center'>
+          <div className='d-flex justify-content-center'>
             <div className='spinner-border text-primary' role='status'>
               <span className='visually-hidden'>Loading...</span>
             </div>
@@ -75,6 +107,7 @@ const Products = () => {
   if (error) {
     return (
       <Fragment>
+        <SEO title='Error - Products - ALMADEV' />
         <Navbar />
         <main style={{ marginTop: 80 }} className='container py-3'>
           <div className='alert alert-danger' role='alert'>
@@ -90,8 +123,8 @@ const Products = () => {
 
   return (
     <Fragment>
+      <SEO {...seoData} />
       <Navbar />
-      <title>Products</title>
       <main style={{ marginTop: 80 }} className='container py-3'>
         <h2 className='text-center mb-4'>Products</h2>
 
@@ -148,7 +181,10 @@ const Products = () => {
                   </div>
 
                   <Link
-                    to={`/product/${product.id}`}
+                    to={`/product/${product.id}/${product.name.replace(
+                      / /g,
+                      "-"
+                    )}`}
                     className='btn btn-primary w-100'>
                     View Details
                   </Link>

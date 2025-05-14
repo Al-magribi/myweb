@@ -65,6 +65,8 @@ const App = () => {
           </div>
         }>
         <Routes>
+          <Route path='*' element={<Home />} />
+
           <Route path='/' element={<Home />} />
 
           <Route
@@ -82,9 +84,9 @@ const App = () => {
 
           <Route path='/products' element={<Products />} />
 
-          <Route path='/product/:id' element={<Detail />} />
+          <Route path='/product/:id/:name' element={<Detail />} />
 
-          <Route path='/product/:id/status' element={<Status />} />
+          <Route path='/product/:id/:name/status' element={<Status />} />
 
           {/* Admin Routes */}
           <Route path='/admin' element={<AdminDash />} />
