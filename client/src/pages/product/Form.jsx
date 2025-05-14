@@ -13,6 +13,21 @@ const Form = ({ product }) => {
     useCreateOrderMutation();
 
   const handleSubmit = () => {
+    if (!formData.name || !formData.email || !formData.phone) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (window.fbq) {
+      window.fbq("track", "InitiateCheckout", {
+        content_name: product.name,
+        content_ids: [product.id],
+        content_type: "product",
+        value: product.price,
+        currency: "IDR",
+      });
+    }
+
     const data = {
       name: formData.name,
       email: formData.email,
