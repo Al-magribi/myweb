@@ -6,7 +6,7 @@ import {
   FaProjectDiagram,
   FaMoneyBillWave,
 } from "react-icons/fa";
-import { useGetStatsQuery } from "../../../../controller/api/admin/ApiDash";
+import { useGetStatsQuery } from "../../../controller/api/admin/ApiDash";
 import { formatCurrency } from "../../../utils/format";
 
 const AdminDash = () => {

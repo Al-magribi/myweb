@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   useSigninMutation,
   useSignupMutation,
-} from "../../../controller/api/ApiAuth";
+} from "../../controller/api/ApiAuth";
 import { toast } from "react-hot-toast";
-import { setLogin, setLogout } from "../../../controller/slice/sliceAuth";
+import { setLogin, setLogout } from "../../controller/slice/sliceAuth";
 
 const Auth = () => {
   const navigate = useNavigate();

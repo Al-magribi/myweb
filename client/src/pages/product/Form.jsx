@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useCreateOrderMutation } from "../../../controller/api/order/ApiOrder";
+import { useCreateOrderMutation } from "../../controller/api/order/ApiOrder";
 
 const Form = ({ product }) => {
   const [formData, setFormData] = useState({

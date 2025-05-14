@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useAddReviewMutation } from "../../../controller/api/admin/ApiProduct";
+import { useAddReviewMutation } from "../../controller/api/admin/ApiProduct";
 import { useParams } from "react-router-dom";
 
 const FormReview = () => {

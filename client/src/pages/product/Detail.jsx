@@ -5,7 +5,7 @@ import Footer from "../../components/Footer/Footer";
 import {
   useGetProductByIdQuery,
   useGetProductReviewsQuery,
-} from "../../../controller/api/admin/ApiProduct";
+} from "../../controller/api/admin/ApiProduct";
 import Form from "./Form";
 import FormReview from "./FormReview";
 import Reviews from "./Reviews";

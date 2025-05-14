@@ -3,7 +3,7 @@ import Layout from "../layout/Layout";
 import {
   useGetConfigQuery,
   useUpdateConfigMutation,
-} from "../../../../controller/api/admin/ApiSetting";
+} from "../../../controller/api/admin/ApiSetting";
 import { toast } from "react-hot-toast";
 
 const AdminSetting = () => {

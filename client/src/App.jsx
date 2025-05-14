@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { useLoadUserMutation } from "../controller/api/ApiAuth";
+import { useLoadUserMutation } from "../src/controller/api/ApiAuth";
 import MetaPixel from "./components/MetaPixel/MetaPixel";
 
 import Home from "./pages/Home/Home";

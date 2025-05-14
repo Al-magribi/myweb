@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Layout from "../layout/Layout";
 import Form from "./Form";
-import { useGetProductsQuery } from "../../../../controller/api/admin/ApiProduct";
+import { useGetProductsQuery } from "../../../controller/api/admin/ApiProduct";
 import Products from "./Products";
 const AdminProducts = () => {
   const [page, setPage] = useState(1);

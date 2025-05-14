@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { useCheckPaymentMutation } from "../../../controller/api/order/ApiOrder";
+import { useCheckPaymentMutation } from "../../controller/api/order/ApiOrder";
 import { useParams } from "react-router-dom";
 
 const Check = () => {

@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useGetProductByIdQuery } from "../../../controller/api/admin/ApiProduct";
+import { useGetProductByIdQuery } from "../../controller/api/admin/ApiProduct";
 
 const Status = () => {
   const { id } = useParams();

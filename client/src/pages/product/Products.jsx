@@ -2,7 +2,7 @@ import React, { Fragment, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { Link } from "react-router-dom";
-import { useGetProductsQuery } from "../../../controller/api/admin/ApiProduct";
+import { useGetProductsQuery } from "../../controller/api/admin/ApiProduct";
 
 const Products = () => {
   const [page, setPage] = useState(1);

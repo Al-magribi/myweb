@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useGetProductReviewsQuery } from "../../../../controller/api/admin/ApiProduct";
+import { useGetProductReviewsQuery } from "../../../controller/api/admin/ApiProduct";
 
 const Reviews = ({ id }) => {
   const [page, setPage] = useState(1);

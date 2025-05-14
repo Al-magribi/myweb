@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDeleteProductMutation } from "../../../../controller/api/admin/ApiProduct";
+import { useDeleteProductMutation } from "../../../controller/api/admin/ApiProduct";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Reviews from "./Reviews";
