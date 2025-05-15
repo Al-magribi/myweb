@@ -13,6 +13,7 @@ const Ecom = lazy(() => import("./pages/course/Ecom"));
 const Products = lazy(() => import("./pages/product/Products"));
 const Detail = lazy(() => import("./pages/product/Detail"));
 import Status from "./pages/product/Status";
+import AI from "./pages/Landing/AI";
 
 // admin
 const AdminDash = lazy(() => import("./pages/admin/dashboard/AdminDash"));
@@ -87,6 +88,10 @@ const App = () => {
           <Route path='/product/:id/:name' element={<Detail />} />
 
           <Route path='/product/:id/:name/status' element={<Status />} />
+
+          <Route path='/seni-menguasai-ai' element={<AI />} />
+
+          <Route path='/:id/:name/status' element={<Status />} />
 
           {/* Admin Routes */}
           <Route path='/admin' element={<AdminDash />} />

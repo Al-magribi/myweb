@@ -26,11 +26,11 @@ const Status = () => {
   const getStatusMessage = (status, productName) => {
     switch (status) {
       case "settlement":
-        return `Payment successful! Please check your Inbox or Spam folder to access "${productName}"`;
+        return `Pembayaran berhasil! Silahkan cek email, inbox atau spam Anda untuk mengakses "${productName}"`;
       case "pending":
-        return "Payment is being processed, please complete your payment";
+        return "Pembayaran sedang diproses, silahkan selesaikan pembayaran Anda";
       default:
-        return "Payment status unknown";
+        return "Status pembayaran tidak diketahui";
     }
   };
 
@@ -59,7 +59,7 @@ const Status = () => {
                 <div className='card-body p-4'>
                   {/* Order Status Header */}
                   <div className='text-center mb-4'>
-                    <h2 className='h3 mb-2'>Payment Status</h2>
+                    <h2 className='h3 mb-2'>Status Pembayaran</h2>
                     <p className='text-muted small mb-0'>Order ID: {orderId}</p>
                   </div>
 
@@ -107,9 +107,9 @@ const Status = () => {
                   {/* Action Button */}
                   <div className='text-center'>
                     <a
-                      href={`/product/${id}/${name}`}
+                      href={`/product/${id}/${name.replace(/\s+/g, "-")}`}
                       className='btn btn-primary px-4'>
-                      Back
+                      Kembali
                     </a>
                   </div>
                 </div>

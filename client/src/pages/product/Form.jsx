@@ -96,7 +96,7 @@ const Form = ({ product }) => {
         <div className='modal-content'>
           <div className='modal-header'>
             <h1 className='modal-title fs-5' id='staticBackdropLabel'>
-              Customer Details
+              Detail Pemesanan
             </h1>
             <button
               type='button'
@@ -111,31 +111,31 @@ const Form = ({ product }) => {
                 <input
                   type='text'
                   className='form-control'
-                  placeholder='Full Name'
+                  placeholder='Nama Lengkap'
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                 />
-                <label htmlFor='name'>Full Name</label>
+                <label htmlFor='name'>Nama Lengkap</label>
               </div>
 
               <div className='form-floating'>
                 <input
                   type='email'
                   className='form-control'
-                  placeholder='Email Address'
+                  placeholder='Email'
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
                 />
-                <label htmlFor='email'>Email Address</label>
+                <label htmlFor='email'>Email</label>
               </div>
 
               <div className='form-floating'>
                 <input
-                  type='text'
+                  type='number'
                   className='form-control'
                   placeholder='Whatsapp'
                   value={formData.phone}
@@ -153,14 +153,14 @@ const Form = ({ product }) => {
               className='btn btn-outline-danger'
               data-bs-dismiss='modal'
               onClick={handleClose}>
-              Cancel
+              Batal
             </button>
             <button
               type='button'
-              className='btn btn-primary'
+              className='btn btn-success'
               disabled={isLoading}
               onClick={handleSubmit}>
-              Process Order
+              Proses Pemesanan
             </button>
           </div>
         </div>

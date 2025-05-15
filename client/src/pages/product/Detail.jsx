@@ -168,7 +168,7 @@ const Detail = () => {
                       </h2>
                       <div className='mb-2'>{renderStars(product?.rating)}</div>
                       <p className='text-muted mb-0'>
-                        {product?.reviewcount} reviews
+                        {product?.reviewcount} ulasan
                       </p>
                     </div>
                     <div className='col-md-8'>
@@ -226,7 +226,7 @@ const Detail = () => {
               <div className='me-2'>{renderStars(product?.rating)}</div>
               <span className='me-2'>{Number(product?.rating).toFixed(1)}</span>
               <span className='text-muted'>
-                ({product?.reviewcount} reviews)
+                ({product?.reviewcount} ulasan)
               </span>
             </div>
 
@@ -235,7 +235,7 @@ const Detail = () => {
               {(Number(product?.totalsales) + start).toLocaleString(
                 "id-ID"
               )}{" "}
-              sold
+              terjual
             </div>
 
             <div
@@ -244,7 +244,7 @@ const Detail = () => {
             />
 
             <div className='mb-4'>
-              <h4>Key Features</h4>
+              <h4>Fitur Produk</h4>
               <ul className='list-unstyled'>
                 {product?.features?.map((feature, index) => (
                   <li key={index} className='mb-2'>
@@ -260,14 +260,14 @@ const Detail = () => {
                 data-bs-toggle='modal'
                 data-bs-target='#order'
                 className='btn btn-success btn-lg'>
-                Buy Now
+                Beli Sekarang
               </button>
 
               <button
                 className='btn btn-outline-warning btn-lg'
                 data-bs-toggle='modal'
                 data-bs-target='#checkPayment'>
-                Check Payment
+                Cek Pembayaran
               </button>
             </div>
 

@@ -74,9 +74,24 @@ router.post("/create-order", async (req, res) => {
         phone: phone,
       },
       callbacks: {
-        finish: `${url}/status`,
-        error: `${url}/status`,
-        pending: `${url}/status`,
+        finish: `${
+          process.env.DOMAIN
+        }/product/${productid}/${product.rows[0].name.replace(
+          /\s+/g,
+          "-"
+        )}/status`,
+        error: `${
+          process.env.DOMAIN
+        }/product/${productid}/${product.rows[0].name.replace(
+          /\s+/g,
+          "-"
+        )}/status`,
+        pending: `${
+          process.env.DOMAIN
+        }/product/${productid}/${product.rows[0].name.replace(
+          /\s+/g,
+          "-"
+        )}/status`,
       },
     };
 
