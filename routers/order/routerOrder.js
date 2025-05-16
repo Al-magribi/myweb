@@ -5,6 +5,31 @@ import SendEmail from "../../utils/sendEmail.js";
 
 const router = Router();
 
+const Link_bonus =
+  "https://drive.google.com/drive/folders/1b_AV5TlsXZGs05g4mm97kMZBkFKtzAk1?usp=sharing";
+
+// Function to generate email template
+const generateEmailTemplate = (name, ebookUrl) => `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+    <div style="background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0;">
+      <h1 style="margin: 0;">Pembayaran Berhasil!</h1>
+    </div>
+    <div style="padding: 20px; background-color: #f9f9f9;">
+      <p style="font-size: 16px; color: #333;">Halo ${name},</p>
+      <p style="font-size: 16px; color: #333;">Pembayaran anda berhasil, silahkan klik link dibawah ini untuk mengakses produk:</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${process.env.DOMAIN}${ebookUrl}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-bottom: 10px; display: inline-block;">Akses Produk</a>
+        <br/>
+        <a href="${Link_bonus}" style="background-color: #2B4C7E; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Download Elementor Pro</a>
+      </div>
+      <p style="font-size: 14px; color: #666;">Terima kasih telah berbelanja di toko kami!</p>
+    </div>
+    <div style="background-color: #f5f5f5; padding: 15px; text-align: center; border-radius: 0 0 5px 5px;">
+      <p style="margin: 0; color: #666; font-size: 12px;">© 2024 Your Store. All rights reserved.</p>
+    </div>
+  </div>
+`;
+
 // Function to get app config
 const getAppConfig = async () => {
   const result = await client.query("SELECT * FROM app_config LIMIT 1");
@@ -142,24 +167,7 @@ const updateStatusOrder = async (status, orderid) => {
     );
 
     const ebookUrl = productData.rows[0]?.ebook_url;
-    const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-        <div style="background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0;">
-          <h1 style="margin: 0;">Pembayaran Berhasil!</h1>
-        </div>
-        <div style="padding: 20px; background-color: #f9f9f9;">
-          <p style="font-size: 16px; color: #333;">Halo ${orderData.name},</p>
-          <p style="font-size: 16px; color: #333;">Pembayaran anda berhasil, silahkan klik link dibawah ini untuk mengakses produk:</p>
-         <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.DOMAIN}${ebookUrl}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Akses Produk</a>
-          </div>
-          <p style="font-size: 14px; color: #666;">Terima kasih telah berbelanja di toko kami!</p>
-        </div>
-        <div style="background-color: #f5f5f5; padding: 15px; text-align: center; border-radius: 0 0 5px 5px;">
-          <p style="margin: 0; color: #666; font-size: 12px;">© 2024 Your Store. All rights reserved.</p>
-        </div>
-      </div>
-    `;
+    const htmlContent = generateEmailTemplate(orderData.name, ebookUrl);
 
     await SendEmail({
       email: orderData.email,
@@ -213,8 +221,6 @@ router.post("/transaction-notification", async (req, res) => {
 // Check Order Status
 router.post("/check-status", async (req, res) => {
   try {
-    const appConfig = await getAppConfig();
-
     const { email, productid } = req.body;
 
     const data = await client.query(
@@ -240,24 +246,7 @@ router.post("/check-status", async (req, res) => {
       );
 
       const ebookUrl = productData.rows[0]?.ebook_url;
-      const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-        <div style="background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0;">
-          <h1 style="margin: 0;">Pembayaran Berhasil!</h1>
-        </div>
-        <div style="padding: 20px; background-color: #f9f9f9;">
-          <p style="font-size: 16px; color: #333;">Halo ${orderData.name},</p>
-          <p style="font-size: 16px; color: #333;">Pembayaran anda berhasil, silahkan klik link dibawah ini untuk mengakses produk:</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.DOMAIN}${ebookUrl}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Akses Produk</a>
-          </div>
-          <p style="font-size: 14px; color: #666;">Terima kasih telah berbelanja di toko kami!</p>
-        </div>
-        <div style="background-color: #f5f5f5; padding: 15px; text-align: center; border-radius: 0 0 5px 5px;">
-          <p style="margin: 0; color: #666; font-size: 12px;">© 2024 Your Store. All rights reserved.</p>
-        </div>
-      </div>
-    `;
+      const htmlContent = generateEmailTemplate(orderData.name, ebookUrl);
 
       await SendEmail({
         email: orderData.email,
