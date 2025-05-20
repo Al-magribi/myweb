@@ -19,6 +19,50 @@ const AI = () => {
     limit: reviewLimit,
   });
 
+  // Countdown Fear Element
+  const [countdown, setCountdown] = React.useState(0);
+  const [deadline, setDeadline] = React.useState(null);
+
+  React.useEffect(() => {
+    // Cek localStorage untuk deadline
+    let savedDeadline = localStorage.getItem("fearCountdownDeadline");
+    if (!savedDeadline) {
+      // Set deadline 3 jam dari sekarang
+      const newDeadline = Date.now() + 3 * 60 * 60 * 1000;
+      localStorage.setItem("fearCountdownDeadline", newDeadline);
+      savedDeadline = newDeadline;
+    }
+    setDeadline(Number(savedDeadline));
+
+    // Update countdown setiap detik
+    const interval = setInterval(() => {
+      const now = Date.now();
+      let diff = Number(savedDeadline) - now;
+      if (diff <= 0) {
+        // Reset deadline ke 3 jam dari sekarang
+        const newDeadline = Date.now() + 3 * 60 * 60 * 1000;
+        localStorage.setItem("fearCountdownDeadline", newDeadline);
+        setDeadline(newDeadline);
+        diff = newDeadline - now;
+      }
+      setCountdown(diff > 0 ? diff : 0);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Format ms ke HH:MM:SS
+  const formatCountdown = (ms) => {
+    if (ms <= 0) return "00:00:00";
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
+      2,
+      "0"
+    );
+    const seconds = String(totalSeconds % 60).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
   console.log(product);
   console.log(reviewsData);
 
@@ -72,12 +116,6 @@ const AI = () => {
               <span className="fw-bold">⭐ {product?.rating}</span> (
               {product?.reviewcount} reviews)
             </div>
-            <div className="bg-success px-3 py-2 rounded-pill">
-              <span className="fw-bold">
-                📚 {(Number(product?.totalsales) + 240).toLocaleString("id-ID")}{" "}
-                terjual
-              </span>
-            </div>
           </div>
         </div>
 
@@ -126,11 +164,7 @@ const AI = () => {
                 <i className="fas fa-gift text-primary me-2"></i>
                 Bonus Eksklusif!
               </h2>
-              <div className="alert alert-warning mb-4">
-                <i className="fas fa-exclamation-triangle me-2"></i>
-                <strong>Terbatas!</strong> Bonus ini hanya untuk 300 orang
-                pertama saja!
-              </div>
+
               <div className="card bg-white border-secondary">
                 <div className="card-body p-4">
                   <div className="d-flex align-items-center mb-3">
@@ -157,10 +191,6 @@ const AI = () => {
                       <i className="fas fa-check text-success me-2"></i>Update
                       Gratis
                     </li>
-                    <li>
-                      <i className="fas fa-check text-success me-2"></i>Support
-                      Premium
-                    </li>
                   </ul>
                 </div>
               </div>
@@ -186,30 +216,89 @@ const AI = () => {
 
         {/* CTA Section */}
         <div className="text-center mb-5">
-          <div className="d-inline-block bg-danger p-4 rounded shadow-lg">
-            <h3 className="h3 fw-bold mb-3">Yuk Cepat Beli!</h3>
-            <p className="mb-4">
-              cuma untuk 300 orang pertama aja, Harga bisa kembali normal kapan
-              aja
-            </p>
-            <div className="mb-3">
-              <span className="text-decoration-line-through fs-5">
+          <div
+            className="d-inline-block bg-danger rounded-4 shadow-lg position-relative"
+            style={{
+              minWidth: 320,
+              maxWidth: 420,
+              padding: "2.5rem 2rem",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+              borderRadius: 18,
+            }}
+          >
+            <h3
+              className="fw-bold mb-3 text-white"
+              style={{ fontSize: 32, letterSpacing: 1 }}
+            >
+              Yuk Cepat Beli!
+            </h3>
+            {/* FEAR COUNTDOWN */}
+            <div className="mb-4">
+              <span
+                className="badge bg-warning text-dark d-block mx-auto"
+                style={{
+                  fontSize: 22,
+                  fontWeight: 700,
+                  padding: "1rem 0",
+                  borderRadius: 12,
+                  minWidth: 260,
+                  letterSpacing: 1,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                }}
+              >
+                {countdown > 0 ? (
+                  <>
+                    <i className="fas fa-hourglass-half me-2"></i>
+                    Sisa waktu promo:
+                    <span
+                      className="fw-bold"
+                      style={{
+                        fontVariantNumeric: "tabular-nums",
+                        animation: "blink 1s steps(1) infinite",
+                        color: "#222",
+                        marginLeft: 6,
+                      }}
+                    >
+                      {formatCountdown(countdown)}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-exclamation-triangle me-2"></i>
+                    Waktu promo habis!
+                  </>
+                )}
+              </span>
+            </div>
+            <div className="mb-4">
+              <span
+                className="text-decoration-line-through fs-6 text-white-50"
+                style={{ marginRight: 8 }}
+              >
                 Rp 99.000
               </span>
-              <span className="ms-2 fs-2 fw-bold text-warning">
+              <span
+                className="fs-1 fw-bold text-warning"
+                style={{ fontSize: 38 }}
+              >
                 Rp {parseInt(product?.price).toLocaleString("id-ID")}
               </span>
             </div>
             <button
               data-bs-toggle="modal"
               data-bs-target="#order"
-              className="btn btn-warning btn-lg fw-bold px-5 py-3"
+              className="btn btn-warning btn-lg fw-bold px-5 py-3 shadow-sm"
+              style={{ fontSize: 20, letterSpacing: 1, borderRadius: 12 }}
             >
               <i className="fas fa-lock me-2"></i>
               Beli Sekarang
             </button>
           </div>
         </div>
+        {/* Animasi blink untuk countdown detik */}
+        <style>{`
+          @keyframes blink { 50% { opacity: 0.5; } }
+        `}</style>
 
         <Form product={product} />
 
