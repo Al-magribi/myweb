@@ -10,6 +10,8 @@ import { ApiSetting } from "./api/admin/ApiSetting";
 // Order
 import { ApiOrder } from "./api/order/ApiOrder";
 
+const isDev = import.meta.env.VITE_MODE === "development";
+
 export const store = configureStore({
   reducer: {
     auth: sliceAuth,
@@ -29,5 +31,5 @@ export const store = configureStore({
 
       ApiOrder.middleware,
     ]),
-  devTools: true,
+  devTools: isDev,
 });

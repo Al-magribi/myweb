@@ -1,0 +1,346 @@
+/* Base styles */
+.wrapper {
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  transition: all 0.3s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+/* Main content styles */
+.main-content {
+  width: calc(100% - 250px);
+  margin-left: 250px;
+  min-height: 100vh;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Sidebar collapsed state */
+.sidebar.icon-only {
+  width: 64px;
+}
+
+.sidebar.icon-only .sidebar-header {
+  padding: 16px 12px;
+  justify-content: center;
+}
+
+.sidebar.icon-only .sidebar-header img {
+  width: 32px;
+  height: 32px;
+}
+
+.sidebar.icon-only .sidebar-header h3,
+.sidebar.icon-only .sidebar-header .sidebar-toggle {
+  display: none;
+}
+
+.sidebar.icon-only .list-group-item {
+  padding: 12px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar.icon-only .list-group-item i {
+  margin: 0 !important;
+  font-size: 1.25rem;
+}
+
+.main-content.sidebar-icon-only {
+  width: calc(100% - 64px);
+  margin-left: 64px;
+}
+
+/* Medium and small screens */
+@media (max-width: 991.98px) {
+  .sidebar {
+    margin-left: -250px;
+    box-shadow: none;
+  }
+
+  .sidebar.show {
+    margin-left: 0;
+    width: 250px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+
+  .main-content {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  /* Show overlay only on medium and small screens */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    backdrop-filter: blur(2px);
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+  }
+}
+
+/* Light theme */
+.light-mode {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.light-mode .sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid #dee2e6;
+}
+
+.light-mode .card {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.light-mode .navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Dark theme */
+.dark-mode {
+  background-color: #212529;
+  color: #f8f9fa;
+}
+
+.dark-mode .sidebar {
+  background-color: #2b3035;
+  border-right: 1px solid #454d55;
+}
+
+.dark-mode .card {
+  background-color: #343a40;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  color: #f8f9fa;
+}
+
+.dark-mode .navbar {
+  background-color: #2b3035;
+  border-bottom: 1px solid #454d55;
+}
+
+.dark-mode .table {
+  color: #f8f9fa;
+}
+
+.dark-mode .table thead th {
+  border-bottom-color: #454d55;
+}
+
+.dark-mode .table td,
+.dark-mode .table th {
+  border-top-color: #454d55;
+}
+
+/* Sidebar items */
+.sidebar .list-group-item {
+  border: none;
+  border-radius: 0;
+  padding: 12px 16px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 3px solid transparent;
+}
+
+.light-mode .sidebar .list-group-item:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-left-color: #0d6efd;
+}
+
+.dark-mode .sidebar .list-group-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-left-color: #0d6efd;
+}
+
+.light-mode .sidebar .list-group-item.active {
+  background-color: rgba(13, 110, 253, 0.1) !important;
+  color: #0d6efd;
+  border-left-color: #0d6efd;
+  font-weight: 500;
+}
+
+.dark-mode .sidebar .list-group-item.active {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fff;
+  border-left-color: #0d6efd;
+  font-weight: 500;
+}
+
+.sidebar .list-group-item i {
+  font-size: 1.1rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Header styles */
+.sidebar-header {
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid;
+}
+
+.sidebar-header .brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.sidebar-header img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.sidebar-header h3 {
+  font-size: 1.25rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Toggle button styles */
+.sidebar-toggle {
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.3s;
+  width: 32px;
+  height: 32px;
+}
+
+.light-mode .sidebar-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .sidebar-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Hide toggle button on medium and small screens */
+@media (max-width: 991.98px) {
+  .sidebar-toggle {
+    display: none !important;
+  }
+}
+
+/* Dropdown styles */
+.dropdown-toggle::after {
+  display: none;
+}
+
+/* Card styles */
+.card {
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+/* Progress bar styles */
+.dark-mode .progress {
+  background-color: #454d55;
+}
+
+/* Custom scrollbar for dark mode */
+.dark-mode ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: #343a40;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: #454d55;
+  border-radius: 4px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Navbar styles */
+.navbar {
+  padding: 0.5rem 1rem;
+  min-height: 64px;
+}
+
+.navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+}
+
+.navbar .dropdown-menu {
+  margin-top: 0.5rem;
+}
+
+/* Custom scrollbar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.light-mode .sidebar::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+
+.light-mode .sidebar::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+  border-radius: 3px;
+}
+
+.light-mode .sidebar::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+
+.dark-mode .sidebar::-webkit-scrollbar-track {
+  background: #2b3035;
+}
+
+.dark-mode .sidebar::-webkit-scrollbar-thumb {
+  background: #454d55;
+  border-radius: 3px;
+}
+
+.dark-mode .sidebar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
