@@ -15,6 +15,9 @@ import routerDash from "./routers/admin/dash/routerDash.js";
 import routerSetting from "./routers/admin/setting/routerSetting.js";
 import routerOrder from "./routers/order/routerOrder.js";
 
+// course
+import routerCourse from "./routers/admin/course/routerCourse.js";
+
 // Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,6 +29,7 @@ app.use("/api/admin/product", routerProduct);
 app.use("/api/admin/dashboard", routerDash);
 app.use("/api/admin/setting", routerSetting);
 app.use("/api/orders", routerOrder);
+app.use("/api/courses", routerCourse);
 
 // Static file serving for assets
 app.use("/assets", express.static(path.join(__dirname, "assets")));

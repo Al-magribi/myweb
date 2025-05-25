@@ -76,6 +76,8 @@ const Auth = () => {
 
         if (user?.level === "admin") {
           navigate("/admin");
+        } else if (user?.level === "user") {
+          navigate("/user-dashboard");
         } else {
           navigate("/");
         }
@@ -110,8 +112,9 @@ const Auth = () => {
   const handleContinue = () => {
     setShowLogoutModal(false);
     if (user?.level === "admin") {
-      console.log(user);
       navigate("/admin");
+    } else if (user?.level === "user") {
+      navigate("/user-dashboard");
     } else {
       navigate("/");
     }
@@ -153,93 +156,93 @@ const Auth = () => {
   }, [isSignin]);
 
   const renderAuthForm = () => (
-    <div className="card-body p-4 p-md-5">
-      <div className="text-center mb-4">
-        <h2 className="fw-bold text-primary mb-2">
+    <div className='card-body p-4 p-md-5'>
+      <div className='text-center mb-4'>
+        <h2 className='fw-bold text-primary mb-2'>
           {isSignInMode ? "Welcome Back!" : "Create Account"}
         </h2>
-        <p className="text-muted">
+        <p className='text-muted'>
           {isSignInMode
             ? "Please sign in to continue"
             : "Fill in your details to get started"}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="needs-validation">
+      <form onSubmit={handleSubmit} className='needs-validation'>
         {!isSignInMode && (
           <>
-            <div className="form-floating mb-3">
+            <div className='form-floating mb-3'>
               <input
-                type="text"
-                className="form-control rounded-3"
-                id="name"
-                name="name"
-                placeholder="John Doe"
+                type='text'
+                className='form-control rounded-3'
+                id='name'
+                name='name'
+                placeholder='John Doe'
                 value={formData.name}
                 onChange={handleChange}
                 required={!isSignInMode}
               />
-              <label htmlFor="name">Full Name</label>
+              <label htmlFor='name'>Full Name</label>
             </div>
-            <div className="form-floating mb-3">
+            <div className='form-floating mb-3'>
               <input
-                type="tel"
-                className="form-control rounded-3"
-                id="phone"
-                name="phone"
-                placeholder="+1234567890"
+                type='tel'
+                className='form-control rounded-3'
+                id='phone'
+                name='phone'
+                placeholder='+1234567890'
                 value={formData.phone}
                 onChange={handleChange}
                 required={!isSignInMode}
               />
-              <label htmlFor="phone">Phone Number</label>
+              <label htmlFor='phone'>Phone Number</label>
             </div>
           </>
         )}
 
-        <div className="form-floating mb-3">
+        <div className='form-floating mb-3'>
           <input
-            type="email"
-            className="form-control rounded-3"
-            id="email"
-            name="email"
-            placeholder="name@example.com"
+            type='email'
+            className='form-control rounded-3'
+            id='email'
+            name='email'
+            placeholder='name@example.com'
             value={formData.email}
             onChange={handleChange}
             required
           />
-          <label htmlFor="email">Email address</label>
+          <label htmlFor='email'>Email address</label>
         </div>
 
-        <div className="form-floating mb-4">
+        <div className='form-floating mb-4'>
           <input
-            type="password"
-            className="form-control rounded-3"
-            id="password"
-            name="password"
-            placeholder="Password"
+            type='password'
+            className='form-control rounded-3'
+            id='password'
+            name='password'
+            placeholder='Password'
             value={formData.password}
             onChange={handleChange}
             required
           />
-          <label htmlFor="password">Password</label>
+          <label htmlFor='password'>Password</label>
         </div>
 
         <button
-          type="submit"
-          className="btn btn-primary w-100 py-3 rounded-3 mb-3 fw-bold"
+          type='submit'
+          className='btn btn-primary w-100 py-3 rounded-3 mb-3 fw-bold'
         >
           {isSignInMode ? "Sign In" : "Create Account"}
         </button>
       </form>
 
-      <div className="text-center">
-        <p className="mb-0 text-muted">
+      <div className='text-center'>
+        <p className='mb-0 text-muted'>
           {isSignInMode
             ? "Don't have an account? "
             : "Already have an account? "}
           <button
-            className="btn btn-link text-primary p-0 text-decoration-none fw-bold"
+            className='btn btn-link text-primary p-0 text-decoration-none fw-bold'
             onClick={() => setIsSignInMode((prev) => !prev)}
           >
             {isSignInMode ? "Sign Up" : "Sign In"}
@@ -250,23 +253,23 @@ const Auth = () => {
   );
 
   const renderLogoutModal = () => (
-    <div className="card-body p-4 p-md-5">
-      <div className="text-center mb-4">
-        <h2 className="fw-bold text-primary mb-2">Logout Confirmation</h2>
-        <p className="text-muted">
+    <div className='card-body p-4 p-md-5'>
+      <div className='text-center mb-4'>
+        <h2 className='fw-bold text-primary mb-2'>Logout Confirmation</h2>
+        <p className='text-muted'>
           Do you want to logout from your previous account?
         </p>
       </div>
-      <div className="d-flex gap-3 justify-content-center">
+      <div className='d-flex gap-3 justify-content-center'>
         <button
           onClick={handleLogout}
-          className="btn btn-danger px-4 py-2 rounded-3"
+          className='btn btn-danger px-4 py-2 rounded-3'
         >
           Yes, Logout
         </button>
         <button
           onClick={handleContinue}
-          className="btn btn-primary px-4 py-2 rounded-3"
+          className='btn btn-primary px-4 py-2 rounded-3'
         >
           No, Continue
         </button>
@@ -275,11 +278,11 @@ const Auth = () => {
   );
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
-      <div className="container py-5">
-        <div className="row justify-content-center">
-          <div className="col-md-6 col-lg-5">
-            <div className="card border-0 shadow-lg rounded-4">
+    <div className='min-vh-100 d-flex align-items-center justify-content-center bg-light'>
+      <div className='container py-5'>
+        <div className='row justify-content-center'>
+          <div className='col-md-6 col-lg-5'>
+            <div className='card border-0 shadow-lg rounded-4'>
               {isSignin
                 ? showLogoutModal
                   ? renderLogoutModal()

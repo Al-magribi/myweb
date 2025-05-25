@@ -6,6 +6,7 @@ import sliceAuth from "./slice/sliceAuth";
 import { ApiProduct } from "./api/admin/ApiProduct";
 import { ApiDash } from "./api/admin/ApiDash";
 import { ApiSetting } from "./api/admin/ApiSetting";
+import { ApiCourse } from "./api/admin/ApiCourse";
 
 // Order
 import { ApiOrder } from "./api/order/ApiOrder";
@@ -19,6 +20,7 @@ export const store = configureStore({
     [ApiProduct.reducerPath]: ApiProduct.reducer,
     [ApiDash.reducerPath]: ApiDash.reducer,
     [ApiSetting.reducerPath]: ApiSetting.reducer,
+    [ApiCourse.reducerPath]: ApiCourse.reducer,
 
     [ApiOrder.reducerPath]: ApiOrder.reducer,
   },
@@ -28,6 +30,7 @@ export const store = configureStore({
       ApiProduct.middleware,
       ApiDash.middleware,
       ApiSetting.middleware,
+      ApiCourse.middleware,
 
       ApiOrder.middleware,
     ]),

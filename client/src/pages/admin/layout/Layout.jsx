@@ -71,7 +71,7 @@ const Layout = ({ children, title }) => {
         minHeight: "100vh",
         transition: "all 0.3s",
         position: window.innerWidth < 992 ? "fixed" : "fixed",
-        zIndex: 1100,
+        zIndex: 1,
         left: 0,
         top: 0,
         display:
@@ -86,12 +86,12 @@ const Layout = ({ children, title }) => {
             : undefined,
       }}
     >
-      <div className="p-3 d-flex justify-content-between align-items-center">
+      <div className='p-3 d-flex justify-content-between align-items-center'>
         {(isSidebarOpen || showSidebarMobile) && (
-          <h5 className="m-0">Admin Panel</h5>
+          <h5 className='m-0'>Admin Panel</h5>
         )}
         <button
-          className="btn btn-link text-white p-0"
+          className='btn btn-link text-white p-0'
           onClick={() => {
             if (window.innerWidth < 992) setShowSidebarMobile(false);
             else setIsSidebarOpen(!isSidebarOpen);
@@ -100,10 +100,10 @@ const Layout = ({ children, title }) => {
           <FaTimes />
         </button>
       </div>
-      <hr className="text-white-50" />
-      <ul className="nav flex-column">
+      <hr className='text-white-50' />
+      <ul className='nav flex-column'>
         {menuItems.map((item) => (
-          <li key={item.path} className="nav-item">
+          <li key={item.path} className='nav-item'>
             <Link
               to={item.path}
               className={`nav-link text-white d-flex align-items-center ${
@@ -118,7 +118,7 @@ const Layout = ({ children, title }) => {
                 if (window.innerWidth < 992) setShowSidebarMobile(false);
               }}
             >
-              <span className="me-3" style={{ minWidth: "20px" }}>
+              <span className='me-3' style={{ minWidth: "20px" }}>
                 {item.icon}
               </span>
               {(isSidebarOpen || showSidebarMobile) && (
@@ -132,28 +132,28 @@ const Layout = ({ children, title }) => {
   );
 
   return (
-    <div className="d-flex">
+    <div className='d-flex'>
       <title>{title}</title>
       {/* Sidebar for desktop and mobile overlay */}
       {window.innerWidth >= 992 ? Sidebar : showSidebarMobile && Sidebar}
       {/* Overlay for mobile */}
       {showSidebarMobile && window.innerWidth < 992 && (
         <div
-          className="position-fixed bg-dark"
+          className='position-fixed bg-dark'
           style={{
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
             opacity: 0.3,
-            zIndex: 1099,
+            zIndex: 99,
           }}
           onClick={() => setShowSidebarMobile(false)}
         />
       )}
       {/* Main Content */}
       <div
-        className="flex-grow-1"
+        className='flex-grow-1'
         style={{
           marginLeft:
             window.innerWidth < 992 ? 0 : isSidebarOpen ? "250px" : "70px",
@@ -165,56 +165,56 @@ const Layout = ({ children, title }) => {
       >
         {/* Top Navigation */}
         <nav
-          className="navbar navbar-expand-lg navbar-light bg-white shadow-sm"
+          className='navbar navbar-expand-lg navbar-light bg-white shadow-sm'
           style={{ height: "60px" }}
         >
-          <div className="container-fluid">
-            <div className="d-flex align-items-center">
+          <div className='container-fluid'>
+            <div className='d-flex align-items-center'>
               {/* Hamburger button for mobile */}
               {window.innerWidth < 992 && (
                 <button
-                  className="btn btn-link text-dark me-2"
+                  className='btn btn-link text-dark me-2'
                   onClick={() => setShowSidebarMobile(true)}
                 >
                   <FaBars />
                 </button>
               )}
-              <h5 className="m-0 ms-3">
+              <h5 className='m-0 ms-3'>
                 {menuItems.find((item) => item.path === location.pathname)
                   ?.label || "Dashboard"}
               </h5>
             </div>
-            <div className="d-flex align-items-center">
-              <div className="dropdown">
+            <div className='d-flex align-items-center'>
+              <div className='dropdown'>
                 <button
-                  className="btn btn-outline-success dropdown-toggle"
-                  type="button"
-                  id="userDropdown"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  className='btn btn-outline-success dropdown-toggle'
+                  type='button'
+                  id='userDropdown'
+                  data-bs-toggle='dropdown'
+                  aria-expanded='false'
                 >
-                  <i className="bi bi-person-circle me-2"></i>
+                  <i className='bi bi-person-circle me-2'></i>
                   Admin
                 </button>
                 <ul
-                  className="dropdown-menu dropdown-menu-end"
-                  aria-labelledby="userDropdown"
+                  className='dropdown-menu dropdown-menu-end'
+                  aria-labelledby='userDropdown'
                 >
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a className='dropdown-item' href='#'>
                       Profile
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a className='dropdown-item' href='#'>
                       Settings
                     </a>
                   </li>
                   <li>
-                    <hr className="dropdown-divider" />
+                    <hr className='dropdown-divider' />
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a className='dropdown-item' href='#'>
                       Logout
                     </a>
                   </li>
@@ -225,7 +225,7 @@ const Layout = ({ children, title }) => {
         </nav>
 
         {/* Page Content */}
-        <div className="p-4">{children}</div>
+        <div className='p-4'>{children}</div>
       </div>
     </div>
   );
