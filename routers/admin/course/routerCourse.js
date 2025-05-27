@@ -43,6 +43,7 @@ router.post(
         requirements,
         is_published,
         video_preview,
+        link_files,
       } = req.body;
 
       // Validate required fields
@@ -102,6 +103,7 @@ router.post(
           video_preview: video_preview || "",
           objectives: objectives ? JSON.parse(objectives) : [],
           requirements: requirements ? JSON.parse(requirements) : [],
+          link_files: link_files || "",
           is_published: is_published === "true",
         };
 
@@ -135,8 +137,8 @@ router.post(
           `INSERT INTO courses (
             title, instructor, category, level, duration, price,
             description, thumbnail, video_preview, objectives,
-            requirements, is_published
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            requirements, link_files, is_published
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
           RETURNING *`,
           [
             title,
@@ -150,6 +152,7 @@ router.post(
             video_preview || "",
             objectives ? JSON.parse(objectives) : [],
             requirements ? JSON.parse(requirements) : [],
+            link_files || "",
             is_published === "true",
           ]
         );

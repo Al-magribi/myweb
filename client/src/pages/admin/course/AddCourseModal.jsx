@@ -9,12 +9,13 @@ const AddCourseModal = ({ onSubmit, detail }) => {
     title: "",
     instructor: "",
     category: "",
-    level: "Beginner",
+    level: "",
     duration: "",
     price: "",
     description: "",
     thumbnail: null,
     video_preview: "",
+    link_files: "",
     objectives: [""],
     requirements: [""],
     is_published: false,
@@ -39,6 +40,7 @@ const AddCourseModal = ({ onSubmit, detail }) => {
         thumbnail: null, // We don't set the file object
         video_preview:
           detail.video_preview === "null" ? "" : detail.video_preview || "",
+        link_files: detail.link_files || "",
         objectives: detail.objectives?.length ? detail.objectives : [""],
         requirements: detail.requirements?.length ? detail.requirements : [""],
         is_published: detail.is_published || false,
@@ -177,6 +179,7 @@ const AddCourseModal = ({ onSubmit, detail }) => {
           description: "",
           thumbnail: null,
           video_preview: "",
+          link_files: "",
           objectives: [""],
           requirements: [""],
           is_published: false,
@@ -195,164 +198,236 @@ const AddCourseModal = ({ onSubmit, detail }) => {
     }
   };
 
+  const handleClose = () => {
+    setFormData({
+      id: "",
+      title: "",
+      instructor: "",
+      category: "",
+      level: "Beginner",
+      duration: "",
+      price: "",
+      description: "",
+      thumbnail: null,
+      video_preview: "",
+      link_files: "",
+      objectives: [""],
+      requirements: [""],
+      is_published: false,
+    });
+    setIsEditMode(false);
+  };
+
   return (
     <div className='modal fade' id='course' tabIndex='-1'>
       <div className='modal-dialog modal-lg modal-dialog-scrollable'>
         <div className='modal-content'>
-          <div className='modal-header'>
-            <h5 className='modal-title'>
+          <div className='modal-header bg-light'>
+            <h5 className='modal-title fw-bold'>
               {isEditMode ? "Edit Course" : "Add New Course"}
             </h5>
             <button
               type='button'
               className='btn-close'
               data-bs-dismiss='modal'
+              onClick={handleClose}
             ></button>
           </div>
-          <div className='modal-body'>
+          <div className='modal-body p-4'>
             <form onSubmit={handleSubmit}>
-              <div className='row g-3'>
-                {/* Basic Information */}
-                <div className='col-12'>
-                  <input
-                    type='text'
-                    className='form-control'
-                    placeholder='Course Title'
-                    name='title'
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+              {/* Course Basic Information Section */}
+              <div className='mb-4'>
+                <h6 className='text-primary mb-3 fw-bold'>Basic Information</h6>
+                <div className='row g-3'>
+                  <div className='col-12'>
+                    <label className='form-label'>Course Title</label>
+                    <input
+                      type='text'
+                      className='form-control form-control-lg'
+                      placeholder='Enter course title'
+                      name='title'
+                      value={formData.title}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
 
-                <div className='col-md-6'>
-                  <input
-                    type='text'
-                    className='form-control'
-                    placeholder='Instructor Name'
-                    name='instructor'
-                    value={formData.instructor}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+                  <div className='col-md-6'>
+                    <label className='form-label'>Instructor</label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      placeholder='Enter instructor name'
+                      name='instructor'
+                      value={formData.instructor}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
 
-                <div className='col-md-4'>
-                  <select
-                    className='form-select'
-                    name='category'
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value='' hidden>
-                      Category
-                    </option>
-                    <option value='Web Development'>Web Development</option>
-                    <option value='Excel'>Excel</option>
-                    <option value='Artificial Interlligence'>
-                      Artificial Intelligence
-                    </option>
-                  </select>
-                </div>
+                  <div className='col-md-6'>
+                    <label className='form-label'>Category</label>
+                    <select
+                      className='form-select'
+                      name='category'
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value='' hidden>
+                        Select Category
+                      </option>
+                      <option value='Web Development'>Web Development</option>
+                      <option value='Excel'>Excel</option>
+                      <option value='Artificial Interlligence'>
+                        Artificial Intelligence
+                      </option>
+                    </select>
+                  </div>
 
-                <div className='col-md-4'>
-                  <select
-                    className='form-select'
-                    name='level'
-                    value={formData.level}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value='' hidden>
-                      Level
-                    </option>
-                    <option value='Beginner'>Beginner</option>
-                    <option value='Intermediate'>Intermediate</option>
-                    <option value='Advance'>Advanced</option>
-                    <option value='All Levels'>All Levels</option>
-                  </select>
-                </div>
+                  <div className='col-md-4'>
+                    <label className='form-label'>Level</label>
+                    <select
+                      className='form-select'
+                      name='level'
+                      value={formData.level}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value='' hidden>
+                        Select Level
+                      </option>
+                      <option value='Beginner'>Beginner</option>
+                      <option value='Intermediate'>Intermediate</option>
+                      <option value='Advance'>Advanced</option>
+                      <option value='All Levels'>All Levels</option>
+                    </select>
+                  </div>
 
-                <div className='col-md-4'>
-                  <input
-                    type='number'
-                    className='form-control'
-                    placeholder='Duration (hours)'
-                    name='duration'
-                    value={formData.duration}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+                  <div className='col-md-4'>
+                    <label className='form-label'>Duration (hours)</label>
+                    <input
+                      type='number'
+                      className='form-control'
+                      placeholder='Enter duration'
+                      name='duration'
+                      value={formData.duration}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
 
-                <div className='col-md-4'>
-                  <input
-                    type='text'
-                    className='form-control'
-                    placeholder='Price'
-                    name='price'
-                    value={priceInput}
-                    onChange={handleInputChange}
-                    onBlur={handlePriceBlur}
-                    onFocus={handlePriceFocus}
-                    required
-                  />
+                  <div className='col-md-4'>
+                    <label className='form-label'>Price</label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      placeholder='Enter price'
+                      name='price'
+                      value={priceInput}
+                      onChange={handleInputChange}
+                      onBlur={handlePriceBlur}
+                      onFocus={handlePriceFocus}
+                      required
+                    />
+                  </div>
                 </div>
+              </div>
 
-                {/* Description */}
-                <div className='col-12'>
+              {/* Course Media Section */}
+              <div className='mb-4'>
+                <h6 className='text-primary mb-3 fw-bold'>Course Media</h6>
+                <div className='row g-3'>
+                  <div className='col-md-6'>
+                    <label className='form-label d-block'>
+                      Thumbnail Image{" "}
+                      {!isEditMode && <span className='text-danger'>*</span>}
+                    </label>
+                    <div className='d-flex gap-3 align-items-start'>
+                      {thumbnailPreview && (
+                        <img
+                          src={thumbnailPreview}
+                          alt='Thumbnail preview'
+                          className='rounded'
+                          style={{
+                            width: "120px",
+                            height: "80px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+                      <div className='flex-grow-1'>
+                        <input
+                          type='file'
+                          className='form-control'
+                          name='thumbnail'
+                          onChange={handleFileChange}
+                          accept='image/*'
+                          required={!isEditMode}
+                        />
+                        <small className='text-muted'>
+                          Recommended size: 1280x720px
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='col-md-6'>
+                    <label className='form-label'>Preview Video URL</label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      name='video_preview'
+                      placeholder='Enter video URL'
+                      value={formData.video_preview}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <small className='text-muted'>YouTube or Vimeo URL</small>
+                  </div>
+
+                  <div className='col-12'>
+                    <label className='form-label'>Course Files Link</label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      name='link_files'
+                      placeholder='Enter course files URL (Google Drive, Dropbox, etc.)'
+                      value={formData.link_files}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Course Description Section */}
+              <div className='mb-4'>
+                <h6 className='text-primary mb-3 fw-bold'>
+                  Course Description
+                </h6>
+                <div className='bg-light rounded p-3'>
                   <ReactQuill
                     theme='snow'
                     value={formData.description}
                     onChange={(value) =>
                       setFormData((prev) => ({ ...prev, description: value }))
                     }
-                    placeholder='Course Description'
+                    placeholder='Enter detailed course description'
                   />
                 </div>
+              </div>
 
-                {/* Media Upload */}
-                <div className='col-md-6'>
-                  <label className='form-label'>
-                    Thumbnail Image{" "}
-                    {!isEditMode && <span className='text-danger'>*</span>}
-                  </label>
-                  <input
-                    type='file'
-                    className='form-control'
-                    name='thumbnail'
-                    onChange={handleFileChange}
-                    accept='image/*'
-                    required={!isEditMode}
-                  />
-                  {thumbnailPreview && (
-                    <img
-                      src={thumbnailPreview}
-                      alt='Thumbnail preview'
-                      className='mt-2 img-thumbnail'
-                      style={{ maxHeight: "100px" }}
-                    />
-                  )}
-                </div>
-
-                <div className='col-md-6'>
-                  <label className='form-label'>Preview Video</label>
-                  <input
-                    type='text'
-                    className='form-control'
-                    name='video_preview'
-                    value={formData.video_preview}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                {/* Learning Objectives */}
-                <div className='col-12'>
-                  <label className='form-label'>Learning Objectives</label>
+              {/* Learning Objectives Section */}
+              <div className='mb-4'>
+                <h6 className='text-primary mb-3 fw-bold'>
+                  Learning Objectives
+                </h6>
+                <div className='bg-light rounded p-3'>
                   {formData.objectives.map((objective, index) => (
                     <div key={index} className='input-group mb-2'>
+                      <span className='input-group-text bg-white'>
+                        <i className='bi bi-check-circle text-primary'></i>
+                      </span>
                       <input
                         type='text'
                         className='form-control'
@@ -374,18 +449,26 @@ const AddCourseModal = ({ onSubmit, detail }) => {
                   ))}
                   <button
                     type='button'
-                    className='btn btn-sm btn-outline-primary'
+                    className='btn btn-sm btn-outline-primary mt-2'
                     onClick={() => addArrayItem("objectives")}
                   >
-                    <i className='bi bi-plus-lg'></i> Add Objective
+                    <i className='bi bi-plus-lg me-1'></i> Add Learning
+                    Objective
                   </button>
                 </div>
+              </div>
 
-                {/* Requirements */}
-                <div className='col-12'>
-                  <label className='form-label'>Requirements</label>
+              {/* Requirements Section */}
+              <div className='mb-4'>
+                <h6 className='text-primary mb-3 fw-bold'>
+                  Course Requirements
+                </h6>
+                <div className='bg-light rounded p-3'>
                   {formData.requirements.map((requirement, index) => (
                     <div key={index} className='input-group mb-2'>
+                      <span className='input-group-text bg-white'>
+                        <i className='bi bi-asterisk text-primary'></i>
+                      </span>
                       <input
                         type='text'
                         className='form-control'
@@ -411,40 +494,41 @@ const AddCourseModal = ({ onSubmit, detail }) => {
                   ))}
                   <button
                     type='button'
-                    className='btn btn-sm btn-outline-primary'
+                    className='btn btn-sm btn-outline-primary mt-2'
                     onClick={() => addArrayItem("requirements")}
                   >
-                    <i className='bi bi-plus-lg'></i> Add Requirement
+                    <i className='bi bi-plus-lg me-1'></i> Add Requirement
                   </button>
-                </div>
-
-                {/* Published Status */}
-                <div className='col-12'>
-                  <div className='form-check'>
-                    <input
-                      type='checkbox'
-                      className='form-check-input'
-                      id='isPublished'
-                      name='is_published'
-                      checked={formData.is_published}
-                      onChange={handleInputChange}
-                    />
-                    <label className='form-check-label' htmlFor='isPublished'>
-                      Publish course immediately
-                    </label>
-                  </div>
                 </div>
               </div>
 
-              <div className='modal-footer'>
+              {/* Published Status */}
+              <div className='mb-4'>
+                <div className='form-check form-switch'>
+                  <input
+                    type='checkbox'
+                    className='form-check-input'
+                    id='isPublished'
+                    name='is_published'
+                    checked={formData.is_published}
+                    onChange={handleInputChange}
+                  />
+                  <label className='form-check-label' htmlFor='isPublished'>
+                    Publish course immediately
+                  </label>
+                </div>
+              </div>
+
+              <div className='modal-footer px-0 pb-0'>
                 <button
                   type='button'
-                  className='btn btn-secondary'
+                  className='btn btn-sm btn-danger'
                   data-bs-dismiss='modal'
+                  onClick={handleClose}
                 >
                   Cancel
                 </button>
-                <button type='submit' className='btn btn-primary'>
+                <button type='submit' className='btn btn-sm btn-primary'>
                   {isEditMode ? "Update Course" : "Create Course"}
                 </button>
               </div>

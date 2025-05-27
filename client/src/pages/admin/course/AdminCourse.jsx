@@ -113,6 +113,13 @@ const AdminCourse = () => {
                     </button>
                     <ul className='dropdown-menu dropdown-menu-end'>
                       <li>
+                        <button className='dropdown-item'>
+                          <i className='bi bi-sliders2 me-2'></i>
+                          Manage
+                        </button>
+                      </li>
+
+                      <li>
                         <button
                           className='dropdown-item'
                           onClick={() => setDetail(course)}
@@ -122,6 +129,11 @@ const AdminCourse = () => {
                           <i className='bi bi-pencil-square me-2'></i>Edit
                         </button>
                       </li>
+
+                      <li>
+                        <hr className='dropdown-divider' />
+                      </li>
+
                       <li>
                         <button className='dropdown-item text-danger'>
                           <i className='bi bi-trash me-2'></i>Delete

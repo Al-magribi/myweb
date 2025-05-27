@@ -32,6 +32,7 @@ CREATE TABLE courses (
     video_preview TEXT NOT NULL,
     objectives TEXT[], -- Course learning objectives
     requirements TEXT[], -- Course prerequisites
+    link_files TEXT,
     is_published BOOLEAN DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
