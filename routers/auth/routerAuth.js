@@ -85,7 +85,7 @@ router.get("/load-user", authorize("user", "admin"), (req, res) => {
   }
 });
 
-router.get("/logout", (req, res) => {
+router.post("/logout", (req, res) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Logout berhasil" });
 });

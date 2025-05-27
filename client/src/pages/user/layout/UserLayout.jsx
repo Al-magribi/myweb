@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useLogoutMutation } from "../../../controller/api/ApiAuth";
+import { setLogout } from "../../../controller/slice/sliceAuth";
 import SEO from "../../../components/SEO/SEO";
 import "./UserLayout.css";
 
@@ -47,6 +50,9 @@ const USER_MENU_ITEMS = [
 
 const UserLayout = ({ children, title }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logout] = useLogoutMutation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     const savedState = localStorage.getItem("sidebarState");
     return savedState ? JSON.parse(savedState) : true;
@@ -88,6 +94,16 @@ const UserLayout = ({ children, title }) => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      dispatch(setLogout());
+      navigate("/auth");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <>
       <SEO title={title} />
@@ -115,8 +131,8 @@ const UserLayout = ({ children, title }) => {
               isDarkMode ? "border-bottom border-dark" : "border-bottom"
             }`}
           >
-            <div className='brand-container'>
-              <img src='/logo.png' alt='ALMADEV' width={32} height={32} />
+            <div className="brand-container">
+              <img src="/logo.png" alt="ALMADEV" width={32} height={32} />
               <h3 className={`${isDarkMode ? "text-white" : "text-dark"}`}>
                 ALMADEV
               </h3>
@@ -135,7 +151,7 @@ const UserLayout = ({ children, title }) => {
               ></i>
             </div>
           </div>
-          <div className='list-group list-group-flush'>
+          <div className="list-group list-group-flush">
             {MENU_ITEMS.map((item) => (
               <Link
                 key={item.path}
@@ -170,7 +186,7 @@ const UserLayout = ({ children, title }) => {
                 : "navbar-light bg-white"
             } shadow-sm`}
           >
-            <div className='container-fluid'>
+            <div className="container-fluid">
               <button
                 className={`btn ${
                   isDarkMode ? "btn-outline-light" : "btn-outline-dark"
@@ -178,22 +194,22 @@ const UserLayout = ({ children, title }) => {
                 onClick={toggleSidebar}
                 title={isSidebarOpen ? "Hide Sidebar" : "Show Sidebar"}
               >
-                <i className='bi bi-list'></i>
+                <i className="bi bi-list"></i>
               </button>
-              <span className='navbar-brand ms-2'>{title}</span>
+              <span className="navbar-brand ms-2">{title}</span>
 
-              <div className='ms-auto d-flex gap-2 align-items-center'>
-                <div className='dropdown'>
+              <div className="ms-auto d-flex gap-2 align-items-center">
+                <div className="dropdown">
                   <button
                     className={`btn btn-outline-${
                       isDarkMode ? "light" : "dark"
                     } dropdown-toggle`}
-                    type='button'
-                    id='userDropdown'
-                    data-bs-toggle='dropdown'
-                    title='User Menu'
+                    type="button"
+                    id="userDropdown"
+                    data-bs-toggle="dropdown"
+                    title="User Menu"
                   >
-                    <i className='bi bi-person-circle fs-5'></i>
+                    <i className="bi bi-person-circle fs-5"></i>
                   </button>
                   <ul
                     className={`dropdown-menu dropdown-menu-end ${
@@ -203,16 +219,19 @@ const UserLayout = ({ children, title }) => {
                     {USER_MENU_ITEMS.map((item) => (
                       <React.Fragment key={item.path}>
                         <li>
-                          <a className='dropdown-item' href={item.path}>
+                          <a className="dropdown-item" href={item.path}>
                             <i className={`bi ${item.icon} me-2`}></i>
                             {item.label}
                           </a>
                         </li>
                         {item.divider && (
                           <li>
-                            <hr className='dropdown-divider' />
-                            <button className='dropdown-item'>
-                              <i className='bi bi-box-arrow-right me-2'></i>
+                            <hr className="dropdown-divider" />
+                            <button
+                              className="dropdown-item"
+                              onClick={handleLogout}
+                            >
+                              <i className="bi bi-box-arrow-right me-2"></i>
                               Logout
                             </button>
                           </li>

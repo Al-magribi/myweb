@@ -64,7 +64,7 @@ router.post(
         // If updating, delete old thumbnail
         if (courseId) {
           const oldCourse = await client.query(
-            "SELECT thumbnail FROM courses WHERE id = $1",
+            "SELECT thumbnail FROM c_courses WHERE id = $1",
             [courseId]
           );
 
@@ -120,7 +120,7 @@ router.post(
         updateValues.push(courseId);
 
         result = await client.query(
-          `UPDATE courses 
+          `UPDATE c_courses 
            SET ${updateFields.join(", ")}, updated_at = CURRENT_TIMESTAMP
            WHERE id = $${paramCount}
            RETURNING *`,
@@ -134,7 +134,7 @@ router.post(
       } else {
         // INSERT new course
         result = await client.query(
-          `INSERT INTO courses (
+          `INSERT INTO c_courses (
             title, instructor, category, level, duration, price,
             description, thumbnail, video_preview, objectives,
             requirements, link_files, is_published
@@ -185,15 +185,19 @@ router.post(
 // Get all courses
 router.get("/get-courses", async (req, res) => {
   try {
-    const result = await client.query(
-      "SELECT * FROM courses ORDER BY created_at DESC"
-    );
+    const result = await client.query(`
+      SELECT 
+        c.*,
+        COUNT(e.id) as enrollment_count
+      FROM c_courses c
+      LEFT JOIN c_enrollments e ON c.id = e.course_id
+      GROUP BY c.id
+      ORDER BY c.created_at DESC
+    `);
     res.json(result.rows);
   } catch (error) {
-    res.status(500).json({
-      error: error.message,
-      detail: "Failed to fetch courses",
-    });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -201,8 +205,9 @@ router.get("/get-courses", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
+    // Get course details
     const courseResult = await client.query(
-      "SELECT * FROM courses WHERE id = $1",
+      "SELECT * FROM c_courses WHERE id = $1",
       [id]
     );
 
@@ -212,8 +217,9 @@ router.get("/:id", async (req, res) => {
       });
     }
 
+    // Get sections with lectures
     const sectionsResult = await client.query(
-      "SELECT * FROM sections WHERE course_id = $1 ORDER BY position",
+      "SELECT * FROM c_sections WHERE course_id = $1 ORDER BY position",
       [id]
     );
 
@@ -221,21 +227,10 @@ router.get("/:id", async (req, res) => {
     const sections = await Promise.all(
       sectionsResult.rows.map(async (section) => {
         const lecturesResult = await client.query(
-          "SELECT * FROM lectures WHERE section_id = $1 ORDER BY position",
+          "SELECT * FROM c_lectures WHERE section_id = $1 ORDER BY position",
           [section.id]
         );
-
-        const lectures = await Promise.all(
-          lecturesResult.rows.map(async (lecture) => {
-            const resourcesResult = await client.query(
-              "SELECT * FROM resources WHERE lecture_id = $1 ORDER BY position",
-              [lecture.id]
-            );
-            return { ...lecture, resources: resourcesResult.rows };
-          })
-        );
-
-        return { ...section, lectures };
+        return { ...section, lectures: lecturesResult.rows };
       })
     );
 
@@ -248,13 +243,54 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Get course for landing page
+router.get("/landing-page/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const courseId = parseInt(id);
+
+    if (isNaN(courseId)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid course ID",
+      });
+    }
+
+    const courseQuery = await client.query(
+      `SELECT 
+        c.*,
+        COUNT(e.id) as enrollment_count
+      FROM c_courses c
+      LEFT JOIN c_enrollments e ON c.id = e.course_id
+      WHERE c.id = $1
+      GROUP BY c.id`,
+      [courseId]
+    );
+
+    if (!courseQuery.rows[0]) {
+      return res.status(404).json({
+        success: false,
+        error: "Course not found",
+      });
+    }
+
+    return res.status(200).json(courseQuery.rows[0]);
+  } catch (error) {
+    console.error("Landing page error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      detail: error.message,
+    });
+  }
+});
 // Delete course
 router.delete("/delete-course/:id", authorize("admin"), async (req, res) => {
   const { id } = req.params;
   try {
     // Get course data first to get file paths
     const courseResult = await client.query(
-      "SELECT thumbnail, video_preview FROM courses WHERE id = $1",
+      "SELECT thumbnail, video_preview FROM c_courses WHERE id = $1",
       [id]
     );
 
@@ -266,7 +302,7 @@ router.delete("/delete-course/:id", authorize("admin"), async (req, res) => {
     await client.query("BEGIN");
 
     // Delete the course (cascade will handle related records)
-    await client.query("DELETE FROM courses WHERE id = $1", [id]);
+    await client.query("DELETE FROM c_courses WHERE id = $1", [id]);
 
     await client.query("COMMIT");
 
@@ -293,113 +329,170 @@ router.delete("/delete-course/:id", authorize("admin"), async (req, res) => {
 
 // Section Endpoints
 router.post("/sections/add-section", authorize("admin"), async (req, res) => {
-  const { course_id, title, description, position } = req.body;
+  const { id, course_id, title, description, position } = req.body;
 
   try {
     await client.query("BEGIN");
 
-    const result = await client.query(
-      `INSERT INTO sections (course_id, title, description, position)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-      [course_id, title, description, position]
-    );
+    let result;
+    if (id) {
+      result = await client.query(
+        `UPDATE c_sections 
+        SET title = $1, description = $2, position = $3, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $4
+        RETURNING *`,
+        [title, description, position, id]
+      );
+    } else {
+      result = await client.query(
+        `INSERT INTO c_sections (course_id, title, description, position)
+        VALUES ($1, $2, $3, $4)
+        RETURNING *`,
+        [course_id, title, description, position]
+      );
+    }
 
     await client.query("COMMIT");
-    res.json(result.rows[0]);
+    res.json({
+      message: id
+        ? "Section updated successfully"
+        : "Section created successfully",
+      section: result.rows[0],
+    });
   } catch (error) {
     await client.query("ROLLBACK");
     res.status(500).json({
       error: error.message,
-      detail: "Failed to create section",
+      detail: "Failed to create/update section",
     });
   }
 });
 
-// Lecture Endpoints
-router.post("/lectures/add-lecture", authorize("admin"), async (req, res) => {
-  const { section_id, title, description, duration, position, is_preview } =
-    req.body;
-
-  try {
-    await client.query("BEGIN");
-
-    const result = await client.query(
-      `INSERT INTO lectures (
-        section_id, title, description, duration,
-        position, is_preview
-      ) VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING *`,
-      [section_id, title, description, duration, position, is_preview]
-    );
-
-    await client.query("COMMIT");
-    res.json(result.rows[0]);
-  } catch (error) {
-    await client.query("ROLLBACK");
-    res.status(500).json({
-      error: error.message,
-      detail: "Failed to create lecture",
-    });
-  }
-});
-
-// Resource Endpoints
-router.post(
-  "/resources/add-resource",
-  uploadCourse.single("content"),
+router.delete(
+  "/sections/delete-section/:id",
+  authorize("admin"),
   async (req, res) => {
+    const { id } = req.params;
     try {
       await client.query("BEGIN");
 
-      const {
-        lecture_id,
-        title,
-        file_type,
-        duration,
-        is_downloadable,
-        position,
-      } = req.body;
-
-      let contentUrl = null;
-      let fileSize = null;
-
-      if (req.file) {
-        contentUrl = `/assets/course/${req.file.filename}`;
-        fileSize = req.file.size;
-      }
-
-      const result = await client.query(
-        `INSERT INTO resources (
-          lecture_id, title, file_type, content_url,
-          file_size, duration, is_downloadable, position
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING *`,
-        [
-          lecture_id,
-          title,
-          file_type,
-          contentUrl,
-          fileSize,
-          duration,
-          is_downloadable === "true",
-          position,
-        ]
+      // Check if section exists
+      const sectionResult = await client.query(
+        "SELECT * FROM c_sections WHERE id = $1",
+        [id]
       );
 
+      if (!sectionResult.rows[0]) {
+        await client.query("ROLLBACK");
+        return res.status(404).json({ error: "Section not found" });
+      }
+
+      // Delete section (cascade will handle lectures)
+      await client.query("DELETE FROM c_sections WHERE id = $1", [id]);
+
       await client.query("COMMIT");
-      res.json(result.rows[0]);
+      res.json({ message: "Section deleted successfully" });
     } catch (error) {
       await client.query("ROLLBACK");
-      // Delete uploaded file if there was an error
-      if (req.file) {
-        fs.unlink(req.file.path, (err) => {
-          if (err) console.error("Error deleting file:", err);
-        });
-      }
       res.status(500).json({
         error: error.message,
-        detail: "Failed to create resource",
+        detail: "Failed to delete section",
+      });
+    }
+  }
+);
+
+// Lecture Endpoints
+router.post("/lectures/add-lecture", authorize("admin"), async (req, res) => {
+  const {
+    id,
+    section_id,
+    title,
+    description,
+    duration,
+    video_url,
+    position,
+    is_preview,
+  } = req.body;
+
+  try {
+    await client.query("BEGIN");
+
+    let result;
+    if (id) {
+      result = await client.query(
+        `UPDATE c_lectures 
+        SET title = $1, description = $2, duration = $3,
+            video_url = $4, position = $5, is_preview = $6,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $7
+        RETURNING *`,
+        [title, description, duration, video_url, position, is_preview, id]
+      );
+    } else {
+      result = await client.query(
+        `INSERT INTO c_lectures (
+          section_id, title, description, duration,
+          video_url, position, is_preview
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *`,
+        [
+          section_id,
+          title,
+          description,
+          duration,
+          video_url,
+          position,
+          is_preview,
+        ]
+      );
+    }
+
+    await client.query("COMMIT");
+    res.json({
+      message: id
+        ? "Lecture updated successfully"
+        : "Lecture created successfully",
+      lecture: result.rows[0],
+    });
+  } catch (error) {
+    await client.query("ROLLBACK");
+    res.status(500).json({
+      error: error.message,
+      detail: "Failed to create/update lecture",
+    });
+  }
+});
+
+router.delete(
+  "/lectures/delete-lecture/:id",
+  authorize("admin"),
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      await client.query("BEGIN");
+
+      // Check if lecture exists
+      const lectureResult = await client.query(
+        "SELECT * FROM c_lectures WHERE id = $1",
+        [id]
+      );
+
+      if (!lectureResult.rows[0]) {
+        await client.query("ROLLBACK");
+        return res.status(404).json({ error: "Lecture not found" });
+      }
+
+      // Delete lecture
+      await client.query("DELETE FROM c_lectures WHERE id = $1", [id]);
+
+      await client.query("COMMIT");
+      res.json({ message: "Lecture deleted successfully" });
+    } catch (error) {
+      await client.query("ROLLBACK");
+      res.status(500).json({
+        error: error.message,
+        detail: "Failed to delete lecture",
       });
     }
   }

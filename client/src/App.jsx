@@ -6,20 +6,17 @@ import MetaPixel from "./components/MetaPixel/MetaPixel";
 
 import Home from "./pages/Home/Home";
 import Auth from "./pages/auth/Auth";
-const Edubyte = lazy(() => import("./pages/EduByte/Edubtye"));
-const Course = lazy(() => import("./pages/course/Course"));
-const Fswd = lazy(() => import("./pages/course/Fswd"));
-const Ecom = lazy(() => import("./pages/course/Ecom"));
-const Products = lazy(() => import("./pages/product/Products"));
-const Detail = lazy(() => import("./pages/product/Detail"));
+
 import Status from "./pages/product/Status";
 import AI from "./pages/Landing/AI";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setLogin } from "./controller/slice/sliceAuth";
 
 // admin
 const AdminDash = lazy(() => import("./pages/admin/dashboard/AdminDash"));
 const AdminProducts = lazy(() => import("./pages/admin/product/AdminProducts"));
 const AdminCourse = lazy(() => import("./pages/admin/course/AdminCourse"));
+const DetailPage = lazy(() => import("./pages/admin/course/detail/DetailPage"));
 const AdminProject = lazy(() => import("./pages/admin/project/AdminProject"));
 const AdminSetting = lazy(() => import("./pages/admin/setting/AdminSetting"));
 const AdminOrder = lazy(() => import("./pages/admin/order/AdminOrder"));
@@ -31,37 +28,45 @@ const UserLearning = lazy(() => import("./pages/user/learning/UserLearning"));
 const UserProduct = lazy(() => import("./pages/user/product/UserProduct"));
 const UserReferal = lazy(() => import("./pages/user/referal/UserReferal"));
 
+// Public
+const Edubyte = lazy(() => import("./pages/EduByte/Edubtye"));
+const Course = lazy(() => import("./pages/course/Course"));
+const Fswd = lazy(() => import("./pages/Landing/Fswd"));
+const Ecom = lazy(() => import("./pages/course/Ecom"));
+const Products = lazy(() => import("./pages/product/Products"));
+const Detail = lazy(() => import("./pages/product/Detail"));
+
 const App = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
   const [loadUser] = useLoadUserMutation();
 
-  const { user: userInfo } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const fetchUser = async () => {
       try {
-        const { data } = await loadUser().unwrap();
-        setUser(data.user);
+        // Use a timeout to prevent hanging if the server doesn't respond
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Request timed out")), 10000)
+        );
+
+        // Race between the actual request and the timeout
+        const response = await Promise.race([
+          loadUser().unwrap(),
+          timeoutPromise,
+        ]);
+
+        dispatch(setLogin(response));
       } catch (error) {
-        setUser(null);
-      } finally {
-        setLoading(false);
+        // Don't show error to user, just silently fail
+        // This allows the app to continue functioning for non-logged in users
+        console.error(error.status);
       }
     };
 
-    checkAuth();
+    // Always fetch user data from server on app load
+    fetchUser();
   }, [loadUser]);
-
-  if (loading) {
-    return (
-      <div className="min-vh-100 d-flex align-items-center justify-content-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <BrowserRouter>
@@ -81,16 +86,13 @@ const App = () => {
 
           <Route path="/" element={<Home />} />
 
-          <Route
-            path="/auth"
-            element={user ? <Navigate to="/" replace /> : <Auth />}
-          />
+          <Route path="/auth" element={<Auth />} />
 
           <Route path="/edubyte" element={<Edubyte />} />
 
           <Route path="/courses" element={<Course />} />
 
-          <Route path="/full-stack-web-developer" element={<Fswd />} />
+          <Route path="/js-full-stack-web-developer" element={<Fswd />} />
 
           <Route path="/ecommerce-toserba" element={<Ecom />} />
 
@@ -111,6 +113,8 @@ const App = () => {
 
           <Route path="/admin/courses" element={<AdminCourse />} />
 
+          <Route path="/admin/courses/:id/:name" element={<DetailPage />} />
+
           <Route path="/admin/projects" element={<AdminProject />} />
 
           <Route path="/admin/settings" element={<AdminSetting />} />
@@ -118,10 +122,7 @@ const App = () => {
           <Route path="/admin/orders" element={<AdminOrder />} />
 
           {/* User Routes */}
-          <Route
-            path="/user-dashboard"
-            element={<UserDash user={userInfo} />}
-          />
+          <Route path="/user-dashboard" element={<UserDash user={user} />} />
 
           <Route path="/user-payment" element={<UserPayment />} />
 

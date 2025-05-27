@@ -11,7 +11,7 @@ export const ApiCourse = createApi({
       return headers;
     },
   }),
-  tagTypes: ["courses", "sections", "lectures", "resources"],
+  tagTypes: ["courses", "sections", "lectures"],
   endpoints: (builder) => ({
     // Course Endpoints
     addCourse: builder.mutation({
@@ -30,7 +30,12 @@ export const ApiCourse = createApi({
 
     getCourseById: builder.query({
       query: (id) => `/${id}`,
-      providesTags: ["courses", "sections", "lectures", "resources"],
+      providesTags: ["courses", "sections", "lectures"],
+    }),
+
+    getLandingPage: builder.query({
+      query: (id) => `/landing-page/${id}`,
+      providesTags: ["courses"],
     }),
 
     deleteCourse: builder.mutation({
@@ -51,6 +56,14 @@ export const ApiCourse = createApi({
       invalidatesTags: ["sections", "courses"],
     }),
 
+    deleteSection: builder.mutation({
+      query: (id) => ({
+        url: `/sections/delete-section/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["sections", "courses"],
+    }),
+
     // Lecture Endpoints
     addLecture: builder.mutation({
       query: (data) => ({
@@ -61,14 +74,12 @@ export const ApiCourse = createApi({
       invalidatesTags: ["lectures", "sections", "courses"],
     }),
 
-    // Resource Endpoints
-    addResource: builder.mutation({
-      query: (formData) => ({
-        url: "/resources/add-resource",
-        method: "POST",
-        body: formData,
+    deleteLecture: builder.mutation({
+      query: (id) => ({
+        url: `/lectures/delete-lecture/${id}`,
+        method: "DELETE",
       }),
-      invalidatesTags: ["resources", "lectures", "sections", "courses"],
+      invalidatesTags: ["lectures", "sections", "courses"],
     }),
   }),
 });
@@ -79,13 +90,13 @@ export const {
   useGetCoursesQuery,
   useGetCourseByIdQuery,
   useDeleteCourseMutation,
+  useGetLandingPageQuery,
 
   // Section hooks
   useAddSectionMutation,
+  useDeleteSectionMutation,
 
   // Lecture hooks
   useAddLectureMutation,
-
-  // Resource hooks
-  useAddResourceMutation,
+  useDeleteLectureMutation,
 } = ApiCourse;
