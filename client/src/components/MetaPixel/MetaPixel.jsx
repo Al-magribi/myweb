@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
+import { useGetConfigQuery } from "../../controller/api/admin/ApiSetting";
 
 const MetaPixel = () => {
+  const { data: config } = useGetConfigQuery();
+
   useEffect(() => {
     // Meta Pixel Code
     !(function (f, b, e, v, n, t, s) {
@@ -26,7 +29,7 @@ const MetaPixel = () => {
       "script",
       "https://connect.facebook.net/en_US/fbevents.js"
     );
-    fbq("init", "1687846078540644");
+    fbq("init", config?.metaPixel);
     fbq("track", "PageView");
   }, []);
 

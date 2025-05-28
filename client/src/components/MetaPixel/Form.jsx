@@ -75,7 +75,7 @@ const Form = ({ item, type }) => {
       reset();
       const closeModal = document.querySelector("[data-bs-dismiss='modal']");
       closeModal.click();
-      window.location.href = data.redirect_url;
+      window.location.href = data.payment_url;
     }
 
     if (isError) {
