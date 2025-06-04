@@ -12,6 +12,13 @@ export const ApiOrder = createApi({
       }),
       providesTags: ["Order"],
     }),
+    getToken: builder.mutation({
+      query: (body) => ({
+        url: "/get-token",
+        method: "POST",
+        body,
+      }),
+    }),
     createOrder: builder.mutation({
       query: (body) => ({
         url: "/create-order",
@@ -32,6 +39,7 @@ export const ApiOrder = createApi({
 
 export const {
   useGetOrderQuery,
+  useGetTokenMutation,
   useCreateOrderMutation,
   useCheckPaymentMutation,
 } = ApiOrder;

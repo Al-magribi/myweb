@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useCreateOrderMutation } from "../../controller/api/order/ApiOrder";
+import {
+  useCreateOrderMutation,
+  useGetTokenMutation,
+} from "../../controller/api/order/ApiOrder";
 
 const Form = ({ item, type }) => {
   const [formData, setFormData] = useState({
@@ -9,10 +12,10 @@ const Form = ({ item, type }) => {
     phone: "",
   });
 
-  const [createOrder, { isLoading, data, isSuccess, error, isError, reset }] =
-    useCreateOrderMutation();
+  const [getToken, { data, isLoading: isLoadingToken }] = useGetTokenMutation();
+  const [createOrder, { isLoading: isLoadingOrder }] = useCreateOrderMutation();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.name || !formData.email || !formData.phone) {
       toast.error("Please fill in all fields");
       return;
@@ -28,34 +31,36 @@ const Form = ({ item, type }) => {
       });
     }
 
-    const data = {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      itemId: item.id,
-      type: type, // 'product' or 'course'
-      quantity: 1,
-      url: window.location.href,
-    };
-
-    toast.promise(createOrder(data).unwrap(), {
-      loading: "Memproses Pemesanan...",
-      success: "Pemesanan Berhasil",
-      error: error?.data?.message || "Pemesanan Gagal",
-    });
+    try {
+      // Step 1: Get Midtrans token
+      await getToken({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        itemId: item.id,
+        type: type,
+        quantity: 1,
+      }).unwrap();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(error?.data?.message || "Failed to process order");
+    }
   };
 
-  const handleClose = () => {
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-    });
-  };
+  const handleOrderCreation = async (orderId, status) => {
+    try {
+      await createOrder({
+        order_id: orderId,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        itemId: item.id,
+        type: type,
+        quantity: 1,
+        status: status,
+        total_amount: item.price,
+      }).unwrap();
 
-  useEffect(() => {
-    if (isSuccess) {
-      // Track purchase event with Meta Pixel
       if (window.fbq) {
         window.fbq("track", "Purchase", {
           value: item.price,
@@ -67,22 +72,82 @@ const Form = ({ item, type }) => {
         });
       }
 
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-      });
-      reset();
-      const closeModal = document.querySelector("[data-bs-dismiss='modal']");
-      closeModal.click();
-      window.location.href = data.payment_url;
+      toast.success("Order processed successfully");
+      handleClose();
+    } catch (error) {
+      console.error("Error creating order:", error);
+      toast.error(error?.data?.message || "Failed to create order");
+      handleClose();
     }
+  };
 
-    if (isError) {
-      reset();
-      console.log(error);
+  const handleClose = () => {
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+    });
+    const closeModal = document.querySelector("[data-bs-dismiss='modal']");
+    if (closeModal) {
+      closeModal.click();
     }
-  }, [isSuccess, isError, error]);
+    // Restore scrolling
+    document.body.classList.remove("modal-open");
+    document.body.style.removeProperty("overflow");
+    document.body.style.removeProperty("padding-right");
+    const modalBackdrop = document.querySelector(".modal-backdrop");
+    if (modalBackdrop) {
+      modalBackdrop.remove();
+    }
+  };
+
+  useEffect(() => {
+    // You can also change below url value to any script url you wish to load,
+    // for example this is snap.js for Sandbox Env (Note: remove `.sandbox` from url if you want to use production version)
+    const midtransScriptUrl = import.meta.env.VITE_MIDTRANS_BASE_URL;
+
+    let scriptTag = document.createElement("script");
+    scriptTag.src = midtransScriptUrl;
+
+    // Optional: set script attribute, for example snap.js have data-client-key attribute
+    // (change the value according to your client-key)
+    const myMidtransClientKey = import.meta.env.VITE_MIDTRANS_CLIENT_KEY;
+    scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+
+    document.body.appendChild(scriptTag);
+
+    return () => {
+      document.body.removeChild(scriptTag);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (data?.token) {
+      window.snap?.pay(data.token, {
+        onSuccess: async (result) => {
+          console.log("Success:", result);
+          await handleOrderCreation(result.order_id, result.transaction_status);
+        },
+        onPending: async (result) => {
+          console.log("Pending:", result);
+          await handleOrderCreation(result.order_id, result.transaction_status);
+        },
+        onError: (error) => {
+          console.log("Error:", error);
+          toast.error("Payment failed");
+          handleClose();
+        },
+        onClose: () => {
+          console.log("Closed without completing payment");
+        },
+      });
+
+      const closeModal = document.querySelector("[data-bs-dismiss='modal']");
+      if (closeModal) {
+        closeModal.click();
+      }
+    }
+  }, [data?.token]);
 
   return (
     <div
@@ -162,7 +227,7 @@ const Form = ({ item, type }) => {
             <button
               type='button'
               className='btn btn-success'
-              disabled={isLoading}
+              disabled={isLoadingToken || isLoadingOrder}
               onClick={handleSubmit}
             >
               Proses Pemesanan

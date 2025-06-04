@@ -11,7 +11,7 @@ const Fswd = () => {
   const { data: course, isLoading, error } = useGetLandingPageQuery(id);
 
   const prices = [
-    { amount: course?.price, label: "Batch 1" },
+    { amount: parseInt(course?.price), label: "Batch 1" },
     { amount: 1560000, label: "Batch 2" },
     { amount: 2560000, label: "Batch 3+" },
   ];
@@ -170,16 +170,6 @@ const Fswd = () => {
                     style={{ objectFit: "cover", maxHeight: "450px" }}
                   />
                   {/* Overlay Badge */}
-                  <div
-                    className='position-absolute top-0 end-0 bg-danger text-white p-4 rounded-circle m-4 shadow-lg'
-                    style={{ transform: "rotate(15deg)" }}
-                  >
-                    <div className='text-center'>
-                      <div className='fw-bold'>Sisa</div>
-                      <div className='display-6 fw-bold'>{remainingSlots}</div>
-                      <div className='small'>slot</div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

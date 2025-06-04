@@ -60,46 +60,37 @@ const config = {
 
 router.post("/create-order", async (req, res) => {
   try {
-    const { name, email, phone, itemId, type, quantity = 1, url } = req.body;
+    const {
+      order_id,
+      name,
+      email,
+      phone,
+      itemId,
+      type,
+      quantity = 1,
+      status,
+      total_amount,
+    } = req.body;
 
     // Validate required fields
-    if (!name || !email || !phone || !itemId || !type) {
+    if (
+      !order_id ||
+      !name ||
+      !email ||
+      !phone ||
+      !itemId ||
+      !type ||
+      !status ||
+      !total_amount
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Get item details based on type
-    let item;
-    if (type === "product") {
-      const result = await client.query(
-        `SELECT * FROM products WHERE id = $1`,
-        [itemId]
-      );
-      item = result.rows[0];
-    } else if (type === "course") {
-      const result = await client.query(
-        `SELECT * FROM c_courses WHERE id = $1`,
-        [itemId]
-      );
-      item = result.rows[0];
-    } else {
-      return res.status(400).json({ message: "Invalid item type" });
-    }
-
-    if (!item) {
-      return res.status(404).json({ message: `${type} not found` });
-    }
-
-    const count = await client.query(`SELECT * FROM orders`);
-    const order = `ORDER-${type === "product" ? "P" : "C"}${
-      count.rows.length + 1
-    }${new Date().getTime()}`;
-    const totalAmount = item.price * quantity;
-
     // Create order in database
     const data = await client.query(
-      `INSERT INTO orders (order_code, name, email, phone, total_amount, type)
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [order, name, email, phone, totalAmount, type]
+      `INSERT INTO orders (order_code, name, email, phone, total_amount, type, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [order_id, name, email, phone, total_amount, type, status]
     );
 
     // Create order items
@@ -107,82 +98,71 @@ router.post("/create-order", async (req, res) => {
       await client.query(
         `INSERT INTO order_items (order_id, product_id, quantity, price)
         VALUES ($1, $2, $3, $4) RETURNING *`,
-        [data.rows[0].id, itemId, quantity, item.price]
+        [data.rows[0].id, itemId, quantity, total_amount]
       );
     } else {
       await client.query(
         `INSERT INTO c_enrollments (course_id, user_id, status, price)
         VALUES ($1, (SELECT id FROM users WHERE email = $2), $3, $4) RETURNING *`,
-        [itemId, email, "pending", totalAmount]
+        [itemId, email, status, total_amount]
       );
+
+      // If status is settlement, create user account if it doesn't exist
+      if (status === "settlement") {
+        const userExists = await client.query(
+          `SELECT id FROM users WHERE email = $1`,
+          [email]
+        );
+
+        if (userExists.rows.length === 0) {
+          // Create new user with email as username and password
+          await client.query(
+            `INSERT INTO users (name, email, password, role)
+             VALUES ($1, $2, $3, $4)`,
+            [name, email, email, "student"]
+          );
+        }
+      }
     }
 
-    const itemName = type === "product" ? item.name : item.title;
+    // If status is settlement, send email
+    if (status === "settlement") {
+      let itemUrl;
+      if (type === "product") {
+        const productData = await client.query(
+          `SELECT p.ebook_url 
+           FROM products p
+           JOIN order_items oi ON p.id = oi.product_id
+           WHERE oi.order_id = $1`,
+          [data.rows[0].id]
+        );
+        itemUrl = productData.rows[0]?.ebook_url;
+      } else {
+        itemUrl = `/course/${itemId}`;
+      }
 
-    // Prepare Midtrans request data
-    const dataPayment = {
-      transaction_details: {
-        order_id: order,
-        gross_amount: parseInt(totalAmount),
-      },
-      item_details: [
-        {
-          id: itemId.toString(),
-          price: parseInt(item.price),
-          quantity: quantity,
-          name: itemName,
-        },
-      ],
-      customer_details: {
-        first_name: name,
+      const htmlContent = generateEmailTemplate(name, itemUrl, type);
+      await SendEmail({
         email: email,
-        phone: phone,
-      },
-      enabled_payments: ["bank_transfer", "qris"],
-      callbacks: {
-        finish: `${process.env.DOMAIN}/${type}/${itemId}/${itemName.replace(
-          /\s+/g,
-          "-"
-        )}/status`,
-        error: `${process.env.DOMAIN}/${type}/${itemId}/${itemName.replace(
-          /\s+/g,
-          "-"
-        )}/status`,
-        pending: `${process.env.DOMAIN}/${type}/${itemId}/${itemName.replace(
-          /\s+/g,
-          "-"
-        )}/status`,
-      },
-    };
+        subject: `Pembayaran Berhasil - Akses ${
+          type === "product" ? "Produk" : "Kursus"
+        }`,
+        message: htmlContent,
+      });
+    }
 
-    // Send request to Midtrans
-    const response = await axios.post(
-      `${process.env.MIDTRANS_BASE_URL}/snap/v1/transactions`,
-      dataPayment,
-      config
-    );
-
-    // Get payment details from Midtrans response
-    const paymentDetails = {
-      order_id: order,
-      payment_url: response.data.redirect_url,
-      token: response.data.token,
-      total_amount: totalAmount,
-      item_name: itemName,
-      type: type,
-    };
-
-    res.status(200).json(paymentDetails);
+    res.status(200).json({
+      status: "success",
+      message:
+        status === "settlement"
+          ? "Order completed successfully"
+          : "Order pending payment",
+    });
   } catch (error) {
     console.error("Error creating order:", error);
-    if (error.response) {
-      // Log Midtrans error details
-      console.error("Midtrans error response:", error.response.data);
-    }
     return res.status(500).json({
       message: "Failed to create order",
       error: error.message,
-      details: error.response?.data || {},
     });
   }
 });
@@ -365,6 +345,107 @@ router.post("/check-status", async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
+  }
+});
+
+// Add new endpoint for getting Midtrans token
+router.post("/get-token", async (req, res) => {
+  try {
+    const { name, email, phone, itemId, type, quantity = 1 } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !phone || !itemId || !type) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Get item details based on type
+    let item;
+    if (type === "product") {
+      const result = await client.query(
+        `SELECT * FROM products WHERE id = $1`,
+        [itemId]
+      );
+      item = result.rows[0];
+    } else if (type === "course") {
+      const result = await client.query(
+        `SELECT * FROM c_courses WHERE id = $1`,
+        [itemId]
+      );
+      item = result.rows[0];
+    } else {
+      return res.status(400).json({ message: "Invalid item type" });
+    }
+
+    if (!item) {
+      return res.status(404).json({ message: `${type} not found` });
+    }
+
+    const count = await client.query(`SELECT * FROM orders`);
+    const order = `ORDER-${type === "product" ? "P" : "C"}${
+      count.rows.length + 1
+    }${new Date().getTime()}`;
+    const totalAmount = item.price * quantity;
+    const itemName = type === "product" ? item.name : item.title;
+
+    // Prepare Midtrans request data
+    const dataPayment = {
+      transaction_details: {
+        order_id: order,
+        gross_amount: parseInt(totalAmount),
+      },
+      item_details: [
+        {
+          id: itemId.toString(),
+          price: parseInt(item.price),
+          quantity: quantity,
+          name: itemName,
+        },
+      ],
+      customer_details: {
+        first_name: name,
+        email: email,
+        phone: phone,
+      },
+      enabled_payments: ["bank_transfer", "other_qris"],
+      callbacks: {
+        finish: `${process.env.DOMAIN}/${type}/${itemId}/${itemName.replace(
+          /\s+/g,
+          "-"
+        )}/status`,
+        error: `${process.env.DOMAIN}/${type}/${itemId}/${itemName.replace(
+          /\s+/g,
+          "-"
+        )}/status`,
+        pending: `${process.env.DOMAIN}/${type}/${itemId}/${itemName.replace(
+          /\s+/g,
+          "-"
+        )}/status`,
+      },
+    };
+
+    // Send request to Midtrans
+    const response = await axios.post(
+      `${process.env.MIDTRANS_BASE_URL}/snap/v1/transactions`,
+      dataPayment,
+      config
+    );
+
+    res.status(200).json({
+      token: response.data.token,
+      order_id: order,
+      total_amount: totalAmount,
+      item_name: itemName,
+    });
+  } catch (error) {
+    console.error("Error getting token:", error);
+    if (error.response) {
+      console.error("Midtrans error response:", error.response.data);
+    }
+    return res.status(500).json({
+      message: "Failed to get token",
+      error: error.message,
+      details: error.response?.data || {},
+    });
   }
 });
 
