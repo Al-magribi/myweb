@@ -46,6 +46,12 @@ export const ApiCourse = createApi({
       invalidatesTags: ["courses"],
     }),
 
+    // User
+    getCourseByUser: builder.query({
+      query: () => "/get-course-by-user",
+      providesTags: ["courses"],
+    }),
+
     // Section Endpoints
     addSection: builder.mutation({
       query: (data) => ({
@@ -91,6 +97,9 @@ export const {
   useGetCourseByIdQuery,
   useDeleteCourseMutation,
   useGetLandingPageQuery,
+
+  // User hooks
+  useGetCourseByUserQuery,
 
   // Section hooks
   useAddSectionMutation,

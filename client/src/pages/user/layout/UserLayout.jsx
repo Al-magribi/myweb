@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLogoutMutation } from "../../../controller/api/ApiAuth";
 import { setLogout } from "../../../controller/slice/sliceAuth";
 import SEO from "../../../components/SEO/SEO";
@@ -52,6 +52,9 @@ const UserLayout = ({ children, title }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { user, isSignin } = useSelector((state) => state.auth);
+
   const [logout] = useLogoutMutation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     const savedState = localStorage.getItem("sidebarState");
@@ -85,9 +88,9 @@ const UserLayout = ({ children, title }) => {
     localStorage.setItem("sidebarState", JSON.stringify(isSidebarOpen));
     localStorage.setItem("sidebarIconOnly", JSON.stringify(isIconOnly));
     document.body.setAttribute("data-theme", isDarkMode ? "dark" : "light");
+    document.body.classList.add("theme-transition");
   }, [isDarkMode, isSidebarOpen, isIconOnly]);
 
-  // Close sidebar when clicking overlay on mobile
   const handleOverlayClick = () => {
     if (window.innerWidth < 992) {
       setIsSidebarOpen(false);
@@ -98,23 +101,30 @@ const UserLayout = ({ children, title }) => {
     try {
       await logout().unwrap();
       dispatch(setLogout());
-      navigate("/auth");
+      navigate("/signin");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!isSignin) {
+        navigate("/signin");
+      }
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [isSignin]);
+
   return (
     <>
       <SEO title={title} />
       <div className={`wrapper ${isDarkMode ? "dark-mode" : "light-mode"}`}>
-        {/* Sidebar Overlay */}
         <div
           className={`sidebar-overlay ${isSidebarOpen ? "active" : ""}`}
           onClick={handleOverlayClick}
         />
 
-        {/* Sidebar */}
         <nav
           className={`sidebar ${
             window.innerWidth >= 992
@@ -125,33 +135,28 @@ const UserLayout = ({ children, title }) => {
               ? "show"
               : ""
           } ${isDarkMode ? "bg-dark" : "bg-white border-end"}`}
+          style={{ transition: "all 0.3s ease" }}
         >
           <div
             className={`sidebar-header ${
               isDarkMode ? "border-bottom border-dark" : "border-bottom"
             }`}
           >
-            <div className="brand-container">
-              <img src="/logo.png" alt="ALMADEV" width={32} height={32} />
-              <h3 className={`${isDarkMode ? "text-white" : "text-dark"}`}>
+            <div className='brand-container'>
+              <img
+                src='/logo.png'
+                alt='ALMADEV'
+                width={32}
+                height={32}
+                className='brand-logo'
+                style={{ transition: "transform 0.3s ease" }}
+              />
+              <h3 className={`${isDarkMode ? "text-white" : "text-dark"} mb-0`}>
                 ALMADEV
               </h3>
             </div>
-            <div
-              className={`sidebar-toggle ${
-                isDarkMode ? "text-white" : "text-dark"
-              }`}
-              onClick={toggleSidebar}
-              title={isIconOnly ? "Expand Sidebar" : "Collapse Sidebar"}
-            >
-              <i
-                className={`bi ${
-                  isIconOnly ? "bi-chevron-right" : "bi-chevron-left"
-                }`}
-              ></i>
-            </div>
           </div>
-          <div className="list-group list-group-flush">
+          <div className='list-group list-group-flush'>
             {MENU_ITEMS.map((item) => (
               <Link
                 key={item.path}
@@ -160,15 +165,33 @@ const UserLayout = ({ children, title }) => {
                   isDarkMode ? "bg-dark text-white" : "bg-white text-dark"
                 } ${location.pathname === item.path ? "active" : ""}`}
                 title={isIconOnly ? item.label : ""}
+                style={{
+                  transition: "all 0.2s ease",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
               >
-                <i className={`bi ${item.icon}`}></i>
+                <i className={`bi ${item.icon} me-2`}></i>
                 {!isIconOnly && <span>{item.label}</span>}
+                {location.pathname === item.path && (
+                  <span
+                    className='active-indicator'
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: "3px",
+                      backgroundColor: "#0d6efd",
+                      transition: "transform 0.3s ease",
+                    }}
+                  />
+                )}
               </Link>
             ))}
           </div>
         </nav>
 
-        {/* Main Content */}
         <div
           className={`main-content ${
             window.innerWidth >= 992
@@ -177,39 +200,77 @@ const UserLayout = ({ children, title }) => {
                 : ""
               : ""
           } ${isDarkMode ? "bg-dark" : "bg-light"}`}
+          style={{ transition: "margin-left 0.3s ease" }}
         >
-          {/* Navbar */}
           <nav
             className={`navbar navbar-expand-lg ${
               isDarkMode
                 ? "navbar-dark bg-dark border-bottom border-secondary"
                 : "navbar-light bg-white"
             } shadow-sm`}
+            style={{ transition: "all 0.3s ease" }}
           >
-            <div className="container-fluid">
+            <div className='container-fluid'>
               <button
                 className={`btn ${
                   isDarkMode ? "btn-outline-light" : "btn-outline-dark"
-                }`}
+                } d-flex align-items-center justify-content-center`}
                 onClick={toggleSidebar}
                 title={isSidebarOpen ? "Hide Sidebar" : "Show Sidebar"}
+                style={{
+                  width: "38px",
+                  height: "38px",
+                  transition: "all 0.2s ease",
+                  padding: 0,
+                }}
               >
-                <i className="bi bi-list"></i>
+                <i className='bi bi-list'></i>
               </button>
-              <span className="navbar-brand ms-2">{title}</span>
+              <span className='navbar-brand ms-2 fw-semibold'>{title}</span>
 
-              <div className="ms-auto d-flex gap-2 align-items-center">
-                <div className="dropdown">
+              <div className='ms-auto d-flex gap-3 align-items-center'>
+                <div className='dropdown'>
                   <button
-                    className={`btn btn-outline-${
+                    className={`btn rounded-circle btn-outline-${
                       isDarkMode ? "light" : "dark"
-                    } dropdown-toggle`}
-                    type="button"
-                    id="userDropdown"
-                    data-bs-toggle="dropdown"
-                    title="User Menu"
+                    } dropdown-toggle d-flex align-items-center justify-content-center`}
+                    type='button'
+                    id='userDropdown'
+                    data-bs-toggle='dropdown'
+                    title='User Menu'
+                    style={{
+                      width: "38px",
+                      height: "38px",
+                      transition: "all 0.2s ease",
+                      padding: 0,
+                    }}
                   >
-                    <i className="bi bi-person-circle fs-5"></i>
+                    {user?.name ? (
+                      <span
+                        className='fs-6 fw-medium'
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: isDarkMode
+                            ? "rgba(255,255,255,0.1)"
+                            : "rgba(0,0,0,0.1)",
+                          borderRadius: "50%",
+                          transition: "background-color 0.3s ease",
+                        }}
+                      >
+                        {user.name
+                          .split(" ")
+                          .slice(0, 2)
+                          .map((name) => name.charAt(0))
+                          .join("")
+                          .toUpperCase()}
+                      </span>
+                    ) : (
+                      <i className='bi bi-person-circle'></i>
+                    )}
                   </button>
                   <ul
                     className={`dropdown-menu dropdown-menu-end ${
@@ -219,19 +280,26 @@ const UserLayout = ({ children, title }) => {
                     {USER_MENU_ITEMS.map((item) => (
                       <React.Fragment key={item.path}>
                         <li>
-                          <a className="dropdown-item" href={item.path}>
+                          <Link
+                            className='dropdown-item d-flex align-items-center'
+                            to={item.path}
+                            style={{ transition: "background-color 0.2s ease" }}
+                          >
                             <i className={`bi ${item.icon} me-2`}></i>
                             {item.label}
-                          </a>
+                          </Link>
                         </li>
                         {item.divider && (
                           <li>
-                            <hr className="dropdown-divider" />
+                            <hr className='dropdown-divider' />
                             <button
-                              className="dropdown-item"
+                              className='dropdown-item d-flex align-items-center text-danger'
                               onClick={handleLogout}
+                              style={{
+                                transition: "background-color 0.2s ease",
+                              }}
                             >
-                              <i className="bi bi-box-arrow-right me-2"></i>
+                              <i className='bi bi-box-arrow-right me-2'></i>
                               Logout
                             </button>
                           </li>
@@ -241,15 +309,20 @@ const UserLayout = ({ children, title }) => {
                   </ul>
                 </div>
 
-                {/* Theme Toggle Button */}
                 <button
-                  className={`btn ${
+                  className={`rounded-circle btn ${
                     isDarkMode ? "btn-outline-light" : "btn-outline-dark"
-                  } me-2`}
+                  } d-flex align-items-center justify-content-center`}
                   onClick={toggleTheme}
                   title={
                     isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
                   }
+                  style={{
+                    width: "38px",
+                    height: "38px",
+                    transition: "all 0.2s ease",
+                    padding: 0,
+                  }}
                 >
                   <i className={`bi ${isDarkMode ? "bi-sun" : "bi-moon"}`}></i>
                 </button>
@@ -257,7 +330,6 @@ const UserLayout = ({ children, title }) => {
             </div>
           </nav>
 
-          {/* Page Content */}
           <div
             className={`container-fluid p-4 ${
               isDarkMode ? "text-white" : "text-dark"

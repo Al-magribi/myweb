@@ -6,7 +6,7 @@ import Form from "../../components/MetaPixel/Form";
 import {
   useGetProductByIdQuery,
   useGetProductReviewsQuery,
-} from "../../controller/api/admin/ApiProduct";
+} from "../../controller/api/product/ApiProduct";
 
 const AI = () => {
   const [reviewPage, setReviewPage] = React.useState(1);

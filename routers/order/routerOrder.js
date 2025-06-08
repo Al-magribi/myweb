@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { client } from "../../config/config.js";
-import axios from "axios";
 import SendEmail from "../../utils/sendEmail.js";
+import { authorize } from "../../middlewares/authorize.js";
+import axios from "axios";
+import bcrypt from "bcrypt";
 
 const router = Router();
 
@@ -58,6 +60,76 @@ const config = {
   },
 };
 
+// Helper function to validate order input
+const validateOrderInput = (orderData) => {
+  const { order_id, name, email, phone, itemId, type, status, total_amount } =
+    orderData;
+  const requiredFields = {
+    order_id,
+    name,
+    email,
+    phone,
+    itemId,
+    type,
+    status,
+    total_amount,
+  };
+
+  const missingFields = Object.entries(requiredFields)
+    .filter(([_, value]) => !value)
+    .map(([field]) => field);
+
+  if (missingFields.length > 0) {
+    throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+  }
+};
+
+// Helper function to create order in database
+const createOrderInDB = async (orderData) => {
+  const { order_id, name, email, phone, total_amount, type, status } =
+    orderData;
+  const result = await client.query(
+    `INSERT INTO orders (order_code, name, email, phone, total_amount, type, status)
+     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+    [order_id, name, email, phone, total_amount, type, status]
+  );
+  return result.rows[0];
+};
+
+// Helper function to create product order items
+const createProductOrderItems = async (
+  orderId,
+  itemId,
+  quantity,
+  total_amount
+) => {
+  await client.query(
+    `INSERT INTO order_items (order_id, product_id, quantity, price)
+     VALUES ($1, $2, $3, $4)`,
+    [orderId, itemId, quantity, total_amount]
+  );
+};
+
+// Helper function to create course enrollment
+const createCourseEnrollment = async (itemId, userId, status, total_amount) => {
+  await client.query(
+    `INSERT INTO c_enrollments (course_id, user_id, status, price)
+     VALUES ($1, $2, $3, $4)`,
+    [itemId, userId, status, total_amount]
+  );
+};
+
+// Helper function to create user account
+const createUserAccount = async (name, email, phone) => {
+  const hashedPassword = await bcrypt.hash(phone, 10);
+  const result = await client.query(
+    `INSERT INTO users (name, email, phone, password)
+     VALUES ($1, $2, $3, $4) RETURNING id`,
+    [name, email, phone, hashedPassword]
+  );
+  return result.rows[0].id;
+};
+
 router.post("/create-order", async (req, res) => {
   try {
     const {
@@ -72,60 +144,26 @@ router.post("/create-order", async (req, res) => {
       total_amount,
     } = req.body;
 
-    // Validate required fields
-    if (
-      !order_id ||
-      !name ||
-      !email ||
-      !phone ||
-      !itemId ||
-      !type ||
-      !status ||
-      !total_amount
-    ) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
+    // Validate input
+    validateOrderInput(req.body);
 
-    // Create order in database
-    const data = await client.query(
-      `INSERT INTO orders (order_code, name, email, phone, total_amount, type, status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [order_id, name, email, phone, total_amount, type, status]
-    );
-
-    // Create order items
+    // Handle order items based on type
     if (type === "product") {
-      await client.query(
-        `INSERT INTO order_items (order_id, product_id, quantity, price)
-        VALUES ($1, $2, $3, $4) RETURNING *`,
-        [data.rows[0].id, itemId, quantity, total_amount]
-      );
+      // Create order in database
+      const order = await createOrderInDB(req.body);
+
+      await createProductOrderItems(order.id, itemId, quantity, total_amount);
     } else {
-      await client.query(
-        `INSERT INTO c_enrollments (course_id, user_id, status, price)
-        VALUES ($1, (SELECT id FROM users WHERE email = $2), $3, $4) RETURNING *`,
-        [itemId, email, status, total_amount]
-      );
-
-      // If status is settlement, create user account if it doesn't exist
+      // For course type, create user account if status is settlement
+      let userId;
       if (status === "settlement") {
-        const userExists = await client.query(
-          `SELECT id FROM users WHERE email = $1`,
-          [email]
-        );
-
-        if (userExists.rows.length === 0) {
-          // Create new user with email as username and password
-          await client.query(
-            `INSERT INTO users (name, email, password, role)
-             VALUES ($1, $2, $3, $4)`,
-            [name, email, email, "student"]
-          );
-        }
+        userId = await createUserAccount(name, email, phone);
       }
+      console.log(userId);
+      await createCourseEnrollment(itemId, userId, status, total_amount);
     }
 
-    // If status is settlement, send email
+    // Send email for completed orders
     if (status === "settlement") {
       let itemUrl;
       if (type === "product") {
@@ -134,7 +172,7 @@ router.post("/create-order", async (req, res) => {
            FROM products p
            JOIN order_items oi ON p.id = oi.product_id
            WHERE oi.order_id = $1`,
-          [data.rows[0].id]
+          [order.id]
         );
         itemUrl = productData.rows[0]?.ebook_url;
       } else {
@@ -358,6 +396,15 @@ router.post("/get-token", async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // Check email first
+    const user = await client.query(`SELECT * FROM users WHERE email = $1`, [
+      email,
+    ]);
+
+    if (user.rows.length > 0 && type === "course") {
+      return res.status(400).json({ message: "Email sudah terdaftar" });
+    }
+
     // Get item details based on type
     let item;
     if (type === "product") {
@@ -446,6 +493,61 @@ router.post("/get-token", async (req, res) => {
       error: error.message,
       details: error.response?.data || {},
     });
+  }
+});
+
+router.get("/get-user-order", authorize("user"), async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const userData = await client.query(`SELECT * FROM users WHERE id = $1`, [
+      id,
+    ]);
+    const user = userData.rows[0];
+
+    // Get orders with product details
+    const orderData = await client.query(
+      `SELECT o.*, 
+        CASE 
+          WHEN o.type = 'product' THEN p.name
+          WHEN o.type = 'course' THEN c.title
+        END as item_name,
+        CASE 
+          WHEN o.type = 'product' THEN p.image_url
+          WHEN o.type = 'course' THEN c.thumbnail
+        END as item_image
+       FROM orders o
+       LEFT JOIN order_items oi ON o.id = oi.order_id
+       LEFT JOIN products p ON oi.product_id = p.id
+       LEFT JOIN c_courses c ON o.type = 'course' AND c.id = (
+         SELECT course_id FROM c_enrollments WHERE user_id = $1 AND status = o.status
+       )
+       WHERE o.email = $2
+       ORDER BY o.created_at DESC`,
+      [id, user.email]
+    );
+
+    // Get enrollments with course details
+    const enrollments = await client.query(
+      `SELECT e.*, 
+        c.title as course_name,
+        c.thumbnail as course_image,
+        c.instructor,
+        c.duration
+       FROM c_enrollments e
+       JOIN c_courses c ON e.course_id = c.id
+       WHERE e.user_id = $1
+       ORDER BY e.created_at DESC`,
+      [id]
+    );
+
+    res.status(200).json({
+      orders: orderData.rows,
+      enrollments: enrollments.rows,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 });
 

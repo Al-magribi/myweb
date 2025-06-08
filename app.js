@@ -10,13 +10,13 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-import routerProduct from "./routers/admin/product/routerProduct.js";
-import routerDash from "./routers/admin/dash/routerDash.js";
-import routerSetting from "./routers/admin/setting/routerSetting.js";
+import routerProduct from "./routers/product/routerProduct.js";
+import routerDash from "./routers/dash/routerDash.js";
+import routerSetting from "./routers/setting/routerSetting.js";
 import routerOrder from "./routers/order/routerOrder.js";
 
 // course
-import routerCourse from "./routers/admin/course/routerCourse.js";
+import routerCourse from "./routers/course/routerCourse.js";
 
 // Basic middleware
 app.use(express.json());

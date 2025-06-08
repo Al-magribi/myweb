@@ -3,7 +3,7 @@ import Layout from "../layout/Layout";
 import {
   useGetConfigQuery,
   useUpdateConfigMutation,
-} from "../../../controller/api/admin/ApiSetting";
+} from "../../../controller/api/setting/ApiSetting";
 import { toast } from "react-hot-toast";
 
 const AdminSetting = () => {
@@ -244,7 +244,8 @@ const AdminSetting = () => {
                     <button
                       type='submit'
                       className='btn btn-primary'
-                      disabled={updateLoading}>
+                      disabled={updateLoading}
+                    >
                       {updateLoading ? "Saving..." : "Save Changes"}
                     </button>
                   </div>

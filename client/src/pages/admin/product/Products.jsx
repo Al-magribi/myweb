@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDeleteProductMutation } from "../../../controller/api/admin/ApiProduct";
+import { useDeleteProductMutation } from "../../../controller/api/product/ApiProduct";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Reviews from "./Reviews";
@@ -93,7 +93,8 @@ const Products = ({ products, total, page, limit, setEditData, setIsEdit }) => {
                     <span
                       className={`badge bg-${
                         product.status === "active" ? "success" : "secondary"
-                      }`}>
+                      }`}
+                    >
                       {product.status}
                     </span>
                   </td>
@@ -103,7 +104,8 @@ const Products = ({ products, total, page, limit, setEditData, setIsEdit }) => {
                         data-bs-toggle='modal'
                         data-bs-target='#addproduct'
                         className='btn btn-sm btn-outline-warning'
-                        onClick={() => handleEdit(product)}>
+                        onClick={() => handleEdit(product)}
+                      >
                         <i className='bi bi-pencil-square'></i>
                       </button>
 
@@ -111,14 +113,16 @@ const Products = ({ products, total, page, limit, setEditData, setIsEdit }) => {
                         className='btn btn-sm btn-outline-info'
                         data-bs-toggle='modal'
                         data-bs-target='#reviews'
-                        onClick={() => setId(product.id)}>
+                        onClick={() => setId(product.id)}
+                      >
                         <i className='bi bi-chat-dots'></i>
                       </button>
 
                       <button
                         className='btn btn-sm btn-outline-danger'
                         onClick={() => handleDelete(product.id)}
-                        disabled={isLoading}>
+                        disabled={isLoading}
+                      >
                         <i className='bi bi-trash'></i>
                       </button>
                     </div>
@@ -141,7 +145,8 @@ const Products = ({ products, total, page, limit, setEditData, setIsEdit }) => {
                   <button
                     className='page-link'
                     onClick={() => setPage(page - 1)}
-                    disabled={page === 1}>
+                    disabled={page === 1}
+                  >
                     Previous
                   </button>
                 </li>
@@ -151,11 +156,13 @@ const Products = ({ products, total, page, limit, setEditData, setIsEdit }) => {
                 <li
                   className={`page-item ${
                     page * limit >= total ? "disabled" : ""
-                  }`}>
+                  }`}
+                >
                   <button
                     className='page-link'
                     onClick={() => setPage(page + 1)}
-                    disabled={page * limit >= total}>
+                    disabled={page * limit >= total}
+                  >
                     Next
                   </button>
                 </li>

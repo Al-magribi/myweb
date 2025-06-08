@@ -197,3 +197,21 @@ CREATE TABLE products(
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
+CREATE TABLE c_lecture_progress(
+    id SERIAL NOT NULL,
+    user_id integer REFERENCES users(id) ON DELETE CASCADE,
+    lecture_id integer REFERENCES c_lectures(id) ON DELETE CASCADE,
+    watch_duration integer DEFAULT 0, -- in seconds
+    total_duration integer NOT NULL, -- in seconds
+    is_completed boolean DEFAULT false,
+    last_watched_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id),
+    UNIQUE(user_id, lecture_id)
+);
+
+-- Add index for better query performance
+CREATE INDEX idx_lecture_progress_user ON c_lecture_progress(user_id);
+CREATE INDEX idx_lecture_progress_lecture ON c_lecture_progress(lecture_id);

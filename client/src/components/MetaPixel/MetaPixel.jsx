@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useGetConfigQuery } from "../../controller/api/admin/ApiSetting";
+import { useGetConfigQuery } from "../../controller/api/setting/ApiSetting";
 
 const MetaPixel = () => {
   const { data: config } = useGetConfigQuery();

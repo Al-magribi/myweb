@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
-import { useGetLandingPageQuery } from "../../controller/api/admin/ApiCourse";
+import { useGetLandingPageQuery } from "../../controller/api/course/ApiCourse";
 import CountdownTimer from "../../components/CountdownTimer/CountdownTimer";
 import SEO from "../../components/SEO/SEO";
 import Form from "../../components/MetaPixel/Form";

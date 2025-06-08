@@ -3,10 +3,10 @@ import { ApiAuth } from "./api/ApiAuth";
 import sliceAuth from "./slice/sliceAuth";
 
 // Admin
-import { ApiProduct } from "./api/admin/ApiProduct";
-import { ApiDash } from "./api/admin/ApiDash";
-import { ApiSetting } from "./api/admin/ApiSetting";
-import { ApiCourse } from "./api/admin/ApiCourse";
+import { ApiProduct } from "./api/product/ApiProduct";
+import { ApiDash } from "./api/dash/ApiDash";
+import { ApiSetting } from "./api/setting/ApiSetting";
+import { ApiCourse } from "./api/course/ApiCourse";
 
 // Order
 import { ApiOrder } from "./api/order/ApiOrder";

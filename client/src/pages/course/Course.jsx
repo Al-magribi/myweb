@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { useNavigate } from "react-router-dom";
-import { useGetCoursesQuery } from "../../controller/api/admin/ApiCourse";
+import { useGetCoursesQuery } from "../../controller/api/course/ApiCourse";
 import { toast } from "react-hot-toast";
 
 const formatPrice = (price) => {
@@ -31,18 +31,18 @@ const Course = () => {
 
   const landingpage = (course) => {
     if (course?.id === 1) {
-      navigate("/js-full-stack-web-developer");
+      window.location.href = "/js-full-stack-web-developer";
     } else {
       toast.custom((t) => (
         <div
           className={`alert alert-warning alert-dismissible fade show`}
-          role="alert"
+          role='alert'
         >
           <button
-            type="button"
-            className="btn-sm btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
+            type='button'
+            className='btn-sm btn-close'
+            data-bs-dismiss='alert'
+            aria-label='Close'
           ></button>
           <strong>Coming Soon</strong>
         </div>
@@ -54,75 +54,75 @@ const Course = () => {
     <Fragment>
       <Navbar />
 
-      <div className="bg-light">
-        <main className="container py-5" style={{ marginTop: 80 }}>
+      <div className='bg-light'>
+        <main className='container py-5' style={{ marginTop: 80 }}>
           {isLoading ? (
-            <div className="d-flex justify-content-center">
-              <div className="spinner-border" role="status">
-                <span className="visually-hidden">Loading...</span>
+            <div className='d-flex justify-content-center'>
+              <div className='spinner-border' role='status'>
+                <span className='visually-hidden'>Loading...</span>
               </div>
             </div>
           ) : (
-            <div className="row g-4">
+            <div className='row g-4'>
               {courses?.map((course) => (
-                <div key={course.id} className="col-12 col-md-3">
+                <div key={course.id} className='col-12 col-md-4'>
                   <div
-                    className="card h-100 border-0 shadow-sm hover-shadow transition"
+                    className='card h-100 border-0 shadow-sm hover-shadow transition'
                     style={{ cursor: "pointer" }}
                     onClick={() => landingpage(course)}
                   >
-                    <div className="position-relative">
+                    <div className='position-relative'>
                       <img
                         src={course.thumbnail}
-                        className="card-img-top"
+                        className='card-img-top'
                         alt={course.title}
                         style={{ height: "200px", objectFit: "cover" }}
                       />
-                      <div className="position-absolute top-0 end-0 m-2 badge bg-dark">
+                      <div className='position-absolute top-0 end-0 m-2 badge bg-dark'>
                         {course.level}
                       </div>
                     </div>
-                    <div className="card-body d-flex flex-column">
-                      <div className="mb-2">
-                        <span className="badge bg-secondary me-2">
+                    <div className='card-body d-flex flex-column'>
+                      <div className='mb-2'>
+                        <span className='badge bg-secondary me-2'>
                           {course.category}
                         </span>
-                        <small className="text-muted">
+                        <small className='text-muted'>
                           {course.duration} Hours
                         </small>
                       </div>
-                      <h5 className="card-title fw-bold mb-1">
+                      <h5 className='card-title fw-bold mb-1'>
                         {course.title.length > 24
                           ? `${course.title.slice(0, 24)}...`
                           : course.title}
                       </h5>
-                      <p className="text-muted small mb-2">
+                      <p className='text-muted small mb-2'>
                         {course.instructor}
                       </p>
 
-                      <div className="d-flex align-items-center mb-2">
-                        <div className="text-warning me-2">
-                          <i className="bi bi-star-fill"></i>
-                          <i className="bi bi-star-fill"></i>
-                          <i className="bi bi-star-fill"></i>
-                          <i className="bi bi-star-fill"></i>
-                          <i className="bi bi-star-half"></i>
+                      <div className='d-flex align-items-center mb-2'>
+                        <div className='text-warning me-2'>
+                          <i className='bi bi-star-fill'></i>
+                          <i className='bi bi-star-fill'></i>
+                          <i className='bi bi-star-fill'></i>
+                          <i className='bi bi-star-fill'></i>
+                          <i className='bi bi-star-half'></i>
                         </div>
-                        <small className="text-muted">(4.5)</small>
+                        <small className='text-muted'>(4.5)</small>
                       </div>
 
-                      <div className="mt-auto">
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="text-primary mb-0 fw-bold">
+                      <div className='mt-auto'>
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <h5 className='text-primary mb-0 fw-bold'>
                             {formatPrice(course.price)}
                           </h5>
-                          <div className="d-flex align-items-center gap-1">
-                            <i className="bi bi-people-fill text-muted"></i>
-                            <small className="text-muted">
+                          <div className='d-flex align-items-center gap-1'>
+                            <i className='bi bi-people-fill text-muted'></i>
+                            <small className='text-muted'>
                               {countStart(course) +
                                 Number(course.enrollment_count)}
                             </small>
-                            <span className="text-muted">Siswa</span>
+                            <span className='text-muted'>Siswa</span>
                           </div>
                         </div>
                       </div>

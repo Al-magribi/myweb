@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Layout from "../layout/Layout";
 import Form from "./Form";
-import { useGetProductsQuery } from "../../../controller/api/admin/ApiProduct";
+import { useGetProductsQuery } from "../../../controller/api/product/ApiProduct";
 import Products from "./Products";
 const AdminProducts = () => {
   const [page, setPage] = useState(1);
@@ -28,7 +28,8 @@ const AdminProducts = () => {
         <div className='container-fluid'>
           <div
             className='d-flex justify-content-center align-items-center'
-            style={{ height: "80vh" }}>
+            style={{ height: "80vh" }}
+          >
             <div className='spinner-border text-primary' role='status'>
               <span className='visually-hidden'>Loading...</span>
             </div>
@@ -82,7 +83,8 @@ const AdminProducts = () => {
               type='button'
               data-bs-toggle='modal'
               data-bs-target='#addproduct'
-              className='btn btn-primary'>
+              className='btn btn-primary'
+            >
               <i className='bi bi-plus-lg me-2'></i>
               Add Product
             </button>

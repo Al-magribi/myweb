@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useGetProductReviewsQuery } from "../../../controller/api/admin/ApiProduct";
+import { useGetProductReviewsQuery } from "../../../controller/api/product/ApiProduct";
 
 const Reviews = ({ id }) => {
   const [page, setPage] = useState(1);
@@ -51,7 +51,8 @@ const Reviews = ({ id }) => {
       className='modal fade'
       id='reviews'
       data-bs-backdrop='static'
-      tabIndex='-1'>
+      tabIndex='-1'
+    >
       <div className='modal-dialog modal-dialog-centered modal-dialog-scrollable'>
         <div className='modal-content'>
           <div className='modal-header'>
@@ -61,7 +62,8 @@ const Reviews = ({ id }) => {
               className='btn-close'
               onClick={handleClose}
               aria-label='Close'
-              data-bs-dismiss='modal'></button>
+              data-bs-dismiss='modal'
+            ></button>
           </div>
 
           <div className='modal-body'>
@@ -98,7 +100,8 @@ const Reviews = ({ id }) => {
                       <button
                         className='page-link'
                         onClick={() => setPage(1)}
-                        disabled={page === 1}>
+                        disabled={page === 1}
+                      >
                         <i className='bi bi-chevron-bar-left'></i>
                       </button>
                     </li>
@@ -107,7 +110,8 @@ const Reviews = ({ id }) => {
                       <button
                         className='page-link'
                         onClick={() => setPage(page - 1)}
-                        disabled={page === 1}>
+                        disabled={page === 1}
+                      >
                         <i className='bi bi-chevron-double-left'></i>
                       </button>
                     </li>
@@ -131,10 +135,12 @@ const Reviews = ({ id }) => {
                           key={pageNum}
                           className={`page-item ${
                             page === pageNum ? "active" : ""
-                          }`}>
+                          }`}
+                        >
                           <button
                             className='page-link'
-                            onClick={() => setPage(pageNum)}>
+                            onClick={() => setPage(pageNum)}
+                          >
                             {pageNum}
                           </button>
                         </li>
@@ -144,11 +150,13 @@ const Reviews = ({ id }) => {
                     <li
                       className={`page-item ${
                         page === totalPages ? "disabled" : ""
-                      }`}>
+                      }`}
+                    >
                       <button
                         className='page-link'
                         onClick={() => setPage(page + 1)}
-                        disabled={page === totalPages}>
+                        disabled={page === totalPages}
+                      >
                         <i className='bi bi-chevron-double-right'></i>
                       </button>
                     </li>
@@ -156,11 +164,13 @@ const Reviews = ({ id }) => {
                     <li
                       className={`page-item ${
                         page === totalPages ? "disabled" : ""
-                      }`}>
+                      }`}
+                    >
                       <button
                         className='page-link'
                         onClick={() => setPage(totalPages)}
-                        disabled={page === totalPages}>
+                        disabled={page === totalPages}
+                      >
                         <i className='bi bi-chevron-bar-right'></i>
                       </button>
                     </li>
@@ -177,7 +187,8 @@ const Reviews = ({ id }) => {
             <button
               className='btn btn-sm btn-outline-secondary'
               onClick={handleClose}
-              data-bs-dismiss='modal'>
+              data-bs-dismiss='modal'
+            >
               Tutup
             </button>
           </div>

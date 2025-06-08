@@ -7,7 +7,7 @@ import MetaPixel from "./components/MetaPixel/MetaPixel";
 import Home from "./pages/Home/Home";
 import Auth from "./pages/auth/Auth";
 
-import Status from "./pages/product/Status";
+import Status from "./components/MetaPixel/Status";
 import AI from "./pages/Landing/AI";
 import { useSelector, useDispatch } from "react-redux";
 import { setLogin } from "./controller/slice/sliceAuth";
@@ -71,66 +71,66 @@ const App = () => {
   return (
     <BrowserRouter>
       <MetaPixel />
-      <Toaster position="top-center" />
+      <Toaster position='top-center' />
       <Suspense
         fallback={
-          <div className="min-vh-100 d-flex align-items-center justify-content-center">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
+          <div className='min-vh-100 d-flex align-items-center justify-content-center'>
+            <div className='spinner-border text-primary' role='status'>
+              <span className='visually-hidden'>Loading...</span>
             </div>
           </div>
         }
       >
         <Routes>
-          <Route path="*" element={<Home />} />
+          <Route path='*' element={<Home />} />
 
-          <Route path="/" element={<Home />} />
+          <Route path='/' element={<Home />} />
 
-          <Route path="/auth" element={<Auth />} />
+          <Route path='/signin' element={<Auth />} />
 
-          <Route path="/edubyte" element={<Edubyte />} />
+          <Route path='/edubyte' element={<Edubyte />} />
 
-          <Route path="/courses" element={<Course />} />
+          <Route path='/courses' element={<Course />} />
 
-          <Route path="/js-full-stack-web-developer" element={<Fswd />} />
+          <Route path='/js-full-stack-web-developer' element={<Fswd />} />
 
-          <Route path="/ecommerce-toserba" element={<Ecom />} />
+          <Route path='/ecommerce-toserba' element={<Ecom />} />
 
-          <Route path="/products" element={<Products />} />
+          <Route path='/products' element={<Products />} />
 
-          <Route path="/product/:id/:name" element={<Detail />} />
+          <Route path='/product/:id/:name' element={<Detail />} />
 
-          <Route path="/product/:id/:name/status" element={<Status />} />
+          <Route path='/:type/:id/:name/status' element={<Status />} />
 
-          <Route path="/seni-menguasai-ai" element={<AI />} />
+          <Route path='/seni-menguasai-ai' element={<AI />} />
 
-          <Route path="/:id/:name/status" element={<Status />} />
+          <Route path='/:id/:name/status' element={<Status />} />
 
           {/* Admin Routes */}
-          <Route path="/admin" element={<AdminDash />} />
+          <Route path='/admin' element={<AdminDash />} />
 
-          <Route path="/admin/products" element={<AdminProducts />} />
+          <Route path='/admin/products' element={<AdminProducts />} />
 
-          <Route path="/admin/courses" element={<AdminCourse />} />
+          <Route path='/admin/courses' element={<AdminCourse />} />
 
-          <Route path="/admin/courses/:id/:name" element={<DetailPage />} />
+          <Route path='/admin/courses/:id/:name' element={<DetailPage />} />
 
-          <Route path="/admin/projects" element={<AdminProject />} />
+          <Route path='/admin/projects' element={<AdminProject />} />
 
-          <Route path="/admin/settings" element={<AdminSetting />} />
+          <Route path='/admin/settings' element={<AdminSetting />} />
 
-          <Route path="/admin/orders" element={<AdminOrder />} />
+          <Route path='/admin/orders' element={<AdminOrder />} />
 
           {/* User Routes */}
-          <Route path="/user-dashboard" element={<UserDash user={user} />} />
+          <Route path='/user-dashboard' element={<UserDash user={user} />} />
 
-          <Route path="/user-payment" element={<UserPayment />} />
+          <Route path='/user-payment' element={<UserPayment />} />
 
-          <Route path="/user-learning" element={<UserLearning />} />
+          <Route path='/user-learning' element={<UserLearning />} />
 
-          <Route path="/user-product" element={<UserProduct />} />
+          <Route path='/user-product' element={<UserProduct />} />
 
-          <Route path="/referal-program" element={<UserReferal />} />
+          <Route path='/referal-program' element={<UserReferal />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

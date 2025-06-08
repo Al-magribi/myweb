@@ -344,3 +344,56 @@
 .dark-mode .sidebar::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Theme Transition */
+.theme-transition,
+.theme-transition * {
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease !important;
+}
+
+/* Hover Effects */
+.hover-opacity:hover {
+  opacity: 0.8;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Button Hover Effects */
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* List Item Hover */
+.list-group-item:hover {
+  background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+.dark-mode .list-group-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Dropdown Items */
+.dropdown-item:hover {
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+.dark-mode .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Brand Logo */
+.brand-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Active Navigation Indicator Animation */
+.active .active-indicator {
+  transform: scaleY(1);
+}
+
+.list-group-item .active-indicator {
+  transform: scaleY(0);
+}

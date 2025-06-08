@@ -1,16 +1,25 @@
 import React from "react";
-import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../../components/Footer/Footer";
+import Navbar from "../Navbar/Navbar";
+import Footer from "../Footer/Footer";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useGetProductByIdQuery } from "../../controller/api/admin/ApiProduct";
+import { useGetProductByIdQuery } from "../../controller/api/product/ApiProduct";
+import { useGetLandingPageQuery } from "../../controller/api/course/ApiCourse";
 
 const Status = () => {
-  const { id, name } = useParams();
+  const { type, id, name } = useParams();
   const [searchParams] = useSearchParams();
   const transactionStatus = searchParams.get("transaction_status");
   const orderId = searchParams.get("order_id");
 
-  const { data, isLoading } = useGetProductByIdQuery(id);
+  const { data, isLoading } = useGetProductByIdQuery(id, {
+    skip: type !== "product",
+  });
+  const { data: courseData, isLoading: courseLoading } = useGetLandingPageQuery(
+    id,
+    { skip: type !== "course" }
+  );
+
+  console.log(courseData);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -87,31 +96,73 @@ const Status = () => {
                     </div>
                   )}
 
+                  {courseData && (
+                    <div className='d-flex flex-column align-items-center gap-3 mb-4'>
+                      <div className='flex-shrink-0'>
+                        <img
+                          src={courseData.thumbnail}
+                          alt={courseData.name}
+                          className='rounded'
+                          style={{
+                            width: "360px",
+                            height: "200px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
+                      <div className='text-center'>
+                        <h3 className='h5 mb-2'>{courseData.title}</h3>
+                        <p className='fw-bold mb-0'>
+                          IDR{" "}
+                          {parseInt(courseData.price).toLocaleString("en-US")}
+                        </p>
+                        <small className='text-muted'>
+                          Gunakan Email sebagai Username Dan No Whatsapp sebagai
+                          Password
+                        </small>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Status Badge */}
                   <div className='text-center mb-3'>
                     <span
                       className={`badge ${getStatusColor(
                         transactionStatus
-                      )} px-3 py-2`}>
+                      )} px-3 py-2`}
+                    >
                       {transactionStatus?.toUpperCase()}
                     </span>
                   </div>
 
                   {/* Status Message */}
-                  <div className='text-center mb-4'>
-                    <p className='mb-0'>
-                      {getStatusMessage(transactionStatus, data?.name)}
-                    </p>
-                  </div>
 
                   {/* Action Button */}
-                  <div className='text-center'>
-                    <a
-                      href={`/product/${id}/${name.replace(/\s+/g, "-")}`}
-                      className='btn btn-primary px-4'>
-                      Kembali
-                    </a>
-                  </div>
+                  {data && (
+                    <>
+                      <div className='text-center mb-4'>
+                        <p className='mb-0'>
+                          {getStatusMessage(transactionStatus, data?.name)}
+                        </p>
+                      </div>
+                      <div className='text-center'>
+                        <a
+                          href={`/product/${id}/${name.replace(/\s+/g, "-")}`}
+                          className='btn btn-primary px-4'
+                        >
+                          Kembali
+                        </a>
+                      </div>
+                    </>
+                  )}
+
+                  {courseData && (
+                    <div className='text-center'>
+                      <a href={`/signin`} className='btn btn-primary px-4'>
+                        Masuk
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

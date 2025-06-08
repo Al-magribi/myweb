@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const ApiOrder = createApi({
   reducerPath: "ApiOrder",
   baseQuery: fetchBaseQuery({ baseUrl: `/api/orders` }),
-  tagTypes: ["Order"],
+  tagTypes: ["Order", "myorders"],
   endpoints: (builder) => ({
     getOrder: builder.query({
       query: () => ({
@@ -34,6 +34,13 @@ export const ApiOrder = createApi({
         body,
       }),
     }),
+    getUserOrder: builder.query({
+      query: () => ({
+        url: "/get-user-order",
+        method: "GET",
+      }),
+      providesTags: ["myorders"],
+    }),
   }),
 });
 
@@ -42,4 +49,5 @@ export const {
   useGetTokenMutation,
   useCreateOrderMutation,
   useCheckPaymentMutation,
+  useGetUserOrderQuery,
 } = ApiOrder;

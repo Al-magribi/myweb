@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { client } from "../../../config/config.js";
-import { authorize } from "../../../middlewares/authorize.js";
+import { client } from "../../config/config.js";
+import { authorize } from "../../middlewares/authorize.js";
 import multer from "multer";
 import path from "path";
 import fs from "fs";

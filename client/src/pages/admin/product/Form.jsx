@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { useAddProductMutation } from "../../../controller/api/admin/ApiProduct";
+import { useAddProductMutation } from "../../../controller/api/product/ApiProduct";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 
@@ -168,7 +168,8 @@ const Form = ({ refetch, editData, isEdit, setIsEdit }) => {
       data-bs-keyboard='false'
       tabIndex='-1'
       aria-labelledby='staticBackdropLabel'
-      aria-hidden='true'>
+      aria-hidden='true'
+    >
       <div className='modal-dialog modal-lg modal-dialog-scrollable'>
         <div className='modal-content'>
           <div className='modal-header'>
@@ -180,7 +181,8 @@ const Form = ({ refetch, editData, isEdit, setIsEdit }) => {
               className='btn-close'
               data-bs-dismiss='modal'
               aria-label='Close'
-              onClick={handleClose}></button>
+              onClick={handleClose}
+            ></button>
           </div>
           <div className='modal-body'>
             <form onSubmit={handleSubmit}>
@@ -269,7 +271,8 @@ const Form = ({ refetch, editData, isEdit, setIsEdit }) => {
                 <div className='d-flex align-items-center gap-3'>
                   <div
                     className='border rounded p-3 text-center'
-                    style={{ width: "150px", height: "150px" }}>
+                    style={{ width: "150px", height: "150px" }}
+                  >
                     {preview ? (
                       <img
                         src={preview}
@@ -312,7 +315,8 @@ const Form = ({ refetch, editData, isEdit, setIsEdit }) => {
                         href={editData.ebook}
                         target='_blank'
                         rel='noopener noreferrer'
-                        className='btn btn-link p-0'>
+                        className='btn btn-link p-0'
+                      >
                         Lihat/Download E-Book Saat Ini
                       </a>
                     </div>
@@ -358,7 +362,8 @@ const Form = ({ refetch, editData, isEdit, setIsEdit }) => {
                   <button
                     type='button'
                     className='btn btn-sm btn-outline-primary'
-                    onClick={addFeature}>
+                    onClick={addFeature}
+                  >
                     <i className='bi bi-plus-lg me-1'></i>
                     Add Feature
                   </button>
@@ -377,7 +382,8 @@ const Form = ({ refetch, editData, isEdit, setIsEdit }) => {
                     <button
                       type='button'
                       className='btn btn-outline-danger'
-                      onClick={() => removeFeature(index)}>
+                      onClick={() => removeFeature(index)}
+                    >
                       <i className='bi bi-trash'></i>
                     </button>
                   </div>
@@ -422,19 +428,22 @@ const Form = ({ refetch, editData, isEdit, setIsEdit }) => {
                   type='button'
                   className='btn btn-secondary'
                   data-bs-dismiss='modal'
-                  onClick={handleClose}>
+                  onClick={handleClose}
+                >
                   Cancel
                 </button>
                 <button
                   type='submit'
                   className='btn btn-primary'
-                  disabled={isLoading}>
+                  disabled={isLoading}
+                >
                   {isLoading ? (
                     <>
                       <span
                         className='spinner-border spinner-border-sm me-2'
                         role='status'
-                        aria-hidden='true'></span>
+                        aria-hidden='true'
+                      ></span>
                       {isEdit ? "Updating..." : "Saving..."}
                     </>
                   ) : isEdit ? (

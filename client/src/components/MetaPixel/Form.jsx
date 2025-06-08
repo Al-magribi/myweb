@@ -4,6 +4,7 @@ import {
   useCreateOrderMutation,
   useGetTokenMutation,
 } from "../../controller/api/order/ApiOrder";
+import { useSignupMutation } from "../../controller/api/ApiAuth";
 
 const Form = ({ item, type }) => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const Form = ({ item, type }) => {
 
   const [getToken, { data, isLoading: isLoadingToken }] = useGetTokenMutation();
   const [createOrder, { isLoading: isLoadingOrder }] = useCreateOrderMutation();
+  const [signup] = useSignupMutation();
 
   const handleSubmit = async () => {
     if (!formData.name || !formData.email || !formData.phone) {
@@ -126,6 +128,7 @@ const Form = ({ item, type }) => {
       window.snap?.pay(data.token, {
         onSuccess: async (result) => {
           console.log("Success:", result);
+
           await handleOrderCreation(result.order_id, result.transaction_status);
         },
         onPending: async (result) => {

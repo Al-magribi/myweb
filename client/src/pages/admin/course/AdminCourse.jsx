@@ -4,14 +4,29 @@ import AddCourseModal from "./AddCourseModal";
 import {
   useGetCoursesQuery,
   useAddCourseMutation,
-} from "../../../controller/api/admin/ApiCourse";
+} from "../../../controller/api/course/ApiCourse";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+
 const AdminCourse = () => {
   const navigate = useNavigate();
   const { data: courses = [], isLoading, error } = useGetCoursesQuery();
   const [detail, setDetail] = useState({});
   const [addCourse] = useAddCourseMutation();
+
+  // Fungsi konversi detik ke HH:MM:SS atau MM:SS
+  function formatDuration(seconds) {
+    if (!seconds || isNaN(seconds)) return "00:00";
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    if (h > 0) {
+      return `${h.toString().padStart(2, "0")}:${m
+        .toString()
+        .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+    }
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  }
 
   const handleAddCourse = async (courseData) => {
     try {
@@ -31,13 +46,13 @@ const AdminCourse = () => {
 
   if (isLoading) {
     return (
-      <Layout title="Admin Course">
+      <Layout title='Admin Course'>
         <div
-          className="d-flex justify-content-center align-items-center"
+          className='d-flex justify-content-center align-items-center'
           style={{ minHeight: "60vh" }}
         >
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
+          <div className='spinner-border text-primary' role='status'>
+            <span className='visually-hidden'>Loading...</span>
           </div>
         </div>
       </Layout>
@@ -46,8 +61,8 @@ const AdminCourse = () => {
 
   if (error) {
     return (
-      <Layout title="Admin Course">
-        <div className="alert alert-danger" role="alert">
+      <Layout title='Admin Course'>
+        <div className='alert alert-danger' role='alert'>
           Error loading courses: {error.data?.message || "Something went wrong"}
         </div>
       </Layout>
@@ -56,19 +71,19 @@ const AdminCourse = () => {
 
   if (courses.length === 0) {
     return (
-      <Layout title="Admin Course">
-        <div className="text-end mb-3">
+      <Layout title='Admin Course'>
+        <div className='text-end mb-3'>
           <button
-            className="btn btn-sm btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#course"
+            className='btn btn-sm btn-outline-primary'
+            data-bs-toggle='modal'
+            data-bs-target='#course'
           >
-            <i className="bi bi-plus-lg me-2"></i>
+            <i className='bi bi-plus-lg me-2'></i>
             Course
           </button>
         </div>
 
-        <div className="alert alert-info" role="alert">
+        <div className='alert alert-info' role='alert'>
           No courses found.
         </div>
 
@@ -78,31 +93,31 @@ const AdminCourse = () => {
   }
 
   return (
-    <Layout title="Admin Course">
-      <div className="text-end mb-3">
+    <Layout title='Admin Course'>
+      <div className='text-end mb-3'>
         <button
-          className="btn btn-sm btn-outline-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#course"
+          className='btn btn-sm btn-outline-primary'
+          data-bs-toggle='modal'
+          data-bs-target='#course'
         >
-          <i className="bi bi-plus-lg me-2"></i>
+          <i className='bi bi-plus-lg me-2'></i>
           Course
         </button>
       </div>
 
       {/* Course Grid */}
-      <div className="row g-2">
+      <div className='row g-2'>
         {courses.map((course) => (
-          <div key={course.id} className="col-12 col-md-6 col-lg-4">
-            <div className="card h-100 border-0 shadow-sm">
+          <div key={course.id} className='col-12 col-md-6 col-lg-4'>
+            <div className='card h-100 border-0 shadow-sm'>
               <img
                 src={course.thumbnail || "https://via.placeholder.com/600x400"}
-                className="card-img-top"
+                className='card-img-top'
                 alt={course.title}
                 style={{ height: "200px", objectFit: "cover" }}
               />
-              <div className="card-body">
-                <div className="d-flex justify-content-between align-items-start mb-2">
+              <div className='card-body'>
+                <div className='d-flex justify-content-between align-items-start mb-2'>
                   <span
                     className={`badge ${
                       course.is_published ? "bg-success" : "bg-warning"
@@ -110,72 +125,72 @@ const AdminCourse = () => {
                   >
                     {course.is_published ? "Published" : "Draft"}
                   </span>
-                  <div className="dropdown">
+                  <div className='dropdown'>
                     <button
-                      className="btn btn-link text-dark p-0"
-                      type="button"
-                      data-bs-toggle="dropdown"
+                      className='btn btn-link text-dark p-0'
+                      type='button'
+                      data-bs-toggle='dropdown'
                     >
-                      <i className="bi bi-three-dots-vertical"></i>
+                      <i className='bi bi-three-dots-vertical'></i>
                     </button>
-                    <ul className="dropdown-menu dropdown-menu-end">
+                    <ul className='dropdown-menu dropdown-menu-end'>
                       <li>
                         <button
-                          className="dropdown-item"
+                          className='dropdown-item'
                           onClick={() => handleDetail(course)}
                         >
-                          <i className="bi bi-sliders2 me-2"></i>
+                          <i className='bi bi-sliders2 me-2'></i>
                           Manage
                         </button>
                       </li>
 
                       <li>
                         <button
-                          className="dropdown-item"
+                          className='dropdown-item'
                           onClick={() => setDetail(course)}
-                          data-bs-toggle="modal"
-                          data-bs-target="#course"
+                          data-bs-toggle='modal'
+                          data-bs-target='#course'
                         >
-                          <i className="bi bi-pencil-square me-2"></i>Edit
+                          <i className='bi bi-pencil-square me-2'></i>Edit
                         </button>
                       </li>
 
                       <li>
-                        <hr className="dropdown-divider" />
+                        <hr className='dropdown-divider' />
                       </li>
 
                       <li>
-                        <button className="dropdown-item text-danger">
-                          <i className="bi bi-trash me-2"></i>Delete
+                        <button className='dropdown-item text-danger'>
+                          <i className='bi bi-trash me-2'></i>Delete
                         </button>
                       </li>
                     </ul>
                   </div>
                 </div>
-                <h5 className="card-title mb-1">{course.title}</h5>
-                <p className="text-muted small mb-2">by {course.instructor}</p>
+                <h5 className='card-title mb-1'>{course.title}</h5>
+                <p className='text-muted small mb-2'>by {course.instructor}</p>
 
-                <div className="mb-3">
-                  <span className="badge bg-info me-2">{course.category}</span>
-                  <span className="badge bg-secondary me-2">
+                <div className='mb-3'>
+                  <span className='badge bg-info me-2'>{course.category}</span>
+                  <span className='badge bg-secondary me-2'>
                     {course.level}
                   </span>
-                  <span className="badge bg-light text-dark">
-                    <i className="bi bi-clock me-1"></i>
-                    {course.duration} hours
+                  <span className='badge bg-light text-dark'>
+                    <i className='bi bi-clock me-1'></i>
+                    {formatDuration(course.duration)}
                   </span>
                 </div>
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <div className="d-flex align-items-center">
-                    <i className="bi bi-people me-2"></i>
+                <div className='d-flex justify-content-between align-items-center mb-2'>
+                  <div className='d-flex align-items-center'>
+                    <i className='bi bi-people me-2'></i>
                     <span>0 students</span>
                   </div>
-                  <div className="d-flex align-items-center">
-                    <i className="bi bi-star-fill text-warning me-1"></i>
+                  <div className='d-flex align-items-center'>
+                    <i className='bi bi-star-fill text-warning me-1'></i>
                     <span>0 (0 reviews)</span>
                   </div>
                 </div>
-                <h6 className="mb-0 fw-bold">
+                <h6 className='mb-0 fw-bold'>
                   Rp {parseFloat(course.price).toLocaleString()}
                 </h6>
               </div>
