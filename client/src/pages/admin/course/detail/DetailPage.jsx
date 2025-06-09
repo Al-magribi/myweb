@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../layout/Layout";
 import { useParams } from "react-router-dom";
 import Section from "./Section";
@@ -6,14 +6,63 @@ import {
   useGetCourseByIdQuery,
   useAddSectionMutation,
 } from "../../../../controller/api/course/ApiCourse";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { toast } from "react-hot-toast";
 
 const DetailPage = () => {
   const { id, name } = useParams();
   const { data: course, isLoading, error } = useGetCourseByIdQuery(id);
-  const [addSection] = useAddSectionMutation();
+  const [addSection, { isSuccess, data, isLoading: isAddingSection }] =
+    useAddSectionMutation();
 
   // State for section form
   const [newSection, setNewSection] = useState({ title: "", description: "" });
+
+  // Configure sensors for drag and drop
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      const oldIndex = course.sections.findIndex(
+        (section) => section.id === active.id
+      );
+      const newIndex = course.sections.findIndex(
+        (section) => section.id === over.id
+      );
+
+      // Update section positions in the database
+      const reorderedSections = arrayMove(course.sections, oldIndex, newIndex);
+      reorderedSections.forEach((section, index) => {
+        addSection({
+          id: section.id,
+          course_id: id,
+          title: section.title,
+          description: section.description,
+          position: index,
+        });
+      });
+    }
+  };
 
   const handleAddSection = async (e) => {
     e.preventDefault();
@@ -33,7 +82,14 @@ const DetailPage = () => {
     }
   };
 
-  if (isLoading) {
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message);
+      console.log(data);
+    }
+  }, [data, isSuccess]);
+
+  if (isLoading || isAddingSection) {
     return (
       <Layout title={`Course - ${name.replace(/-/g, " ")}`}>
         <div className='d-flex justify-content-center align-items-center min-vh-100'>
@@ -62,13 +118,24 @@ const DetailPage = () => {
         {/* Sections List */}
         <div className='row g-4'>
           {course?.sections?.length > 0 ? (
-            course?.sections?.map((section, index) => (
-              <div key={section.id} className='col-12'>
-                <div className='card shadow-sm mb-4'>
-                  <Section section={section} index={index} />
-                </div>
-              </div>
-            ))
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={course.sections.map((section) => section.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {course.sections.map((section, index) => (
+                  <div key={section.id} className='col-12'>
+                    <div className='card shadow-sm mb-4'>
+                      <Section section={section} index={index} name={name} />
+                    </div>
+                  </div>
+                ))}
+              </SortableContext>
+            </DndContext>
           ) : (
             <div className='col-12'>
               <div

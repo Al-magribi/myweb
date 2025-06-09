@@ -164,7 +164,10 @@ const UserLearning = () => {
                 <div className='card-footer bg-transparent border-0'>
                   <div className='d-grid'>
                     <Link
-                      to={`/course/${course.id}`}
+                      to={`/learning/course/${course.id}/${course.title.replace(
+                        / /g,
+                        "-"
+                      )}`}
                       className='btn btn-primary'
                     >
                       <i className='bi bi-play-circle me-2'></i>

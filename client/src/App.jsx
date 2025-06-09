@@ -25,6 +25,7 @@ const AdminOrder = lazy(() => import("./pages/admin/order/AdminOrder"));
 const UserDash = lazy(() => import("./pages/user/dashboard/UserDash"));
 const UserPayment = lazy(() => import("./pages/user/payment/UserPayment"));
 const UserLearning = lazy(() => import("./pages/user/learning/UserLearning"));
+const Learning = lazy(() => import("./pages/user/learning/Learning"));
 const UserProduct = lazy(() => import("./pages/user/product/UserProduct"));
 const UserReferal = lazy(() => import("./pages/user/referal/UserReferal"));
 
@@ -127,6 +128,8 @@ const App = () => {
           <Route path='/user-payment' element={<UserPayment />} />
 
           <Route path='/user-learning' element={<UserLearning />} />
+
+          <Route path='/learning/course/:id/:name' element={<Learning />} />
 
           <Route path='/user-product' element={<UserProduct />} />
 

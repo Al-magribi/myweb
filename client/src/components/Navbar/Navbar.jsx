@@ -77,7 +77,10 @@ const Navbar = () => {
             </li>
             <li className='nav-item'>
               {user?.id ? (
-                <Link className='nav-link' to={userLevel}>
+                <Link
+                  className='nav-link'
+                  to={user?.level === "admin" ? adminLevel : userLevel}
+                >
                   Dashboard
                 </Link>
               ) : (
