@@ -128,7 +128,7 @@ const Learning = () => {
           style={{ minHeight: "100vh", background: "#fff" }}
         >
           {/* Video Player */}
-          <VideoPlayer videoId={currentVideoId} />
+          <VideoPlayer lecture={selectedLecture} />
 
           {/* Tabs */}
           <CourseTabs

@@ -28,7 +28,7 @@ const CourseContentSidebar = ({
         {sections.map((section) => (
           <div key={section.id} className='mb-1'>
             <div
-              className='fw-semibold px-4 py-2 d-flex align-items-center section-title'
+              className='fw-semibold px-4 py-2 d-flex align-items-center justify-content-between section-title'
               style={{
                 fontSize: "1rem",
                 cursor: "pointer",
@@ -46,17 +46,22 @@ const CourseContentSidebar = ({
                 )
               }
             >
-              <i
-                className={`bi ${
-                  expandedSection === section.id
-                    ? "bi-folder2-open"
-                    : "bi-folder2"
-                } me-2 text-secondary`}
-              ></i>
-              <span>{section.title}</span>
-              <span className='ms-auto text-muted small'>
-                {section.lectures.length} lectures
-              </span>
+              <div className='d-flex align-items-center'>
+                <i
+                  className={`bi ${
+                    expandedSection === section.id
+                      ? "bi-folder2-open"
+                      : "bi-folder2"
+                  } me-2 text-secondary`}
+                ></i>
+                <div className='d-flex flex-column align-items-start'>
+                  <span>{section.title}</span>
+                  <span className='text-muted small'>
+                    {section.lectures.length} lectures
+                  </span>
+                </div>
+              </div>
+
               <i
                 className={`ms-2 bi ${
                   expandedSection === section.id

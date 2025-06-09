@@ -46,12 +46,6 @@ export const ApiCourse = createApi({
       invalidatesTags: ["courses"],
     }),
 
-    // User
-    getCourseByUser: builder.query({
-      query: () => "/get-course-by-user",
-      providesTags: ["courses"],
-    }),
-
     // Section Endpoints
     addSection: builder.mutation({
       query: (data) => ({
@@ -87,6 +81,31 @@ export const ApiCourse = createApi({
       }),
       invalidatesTags: ["lectures", "sections", "courses"],
     }),
+
+    // User
+    getCourseByUser: builder.query({
+      query: () => "/get-course-by-user",
+      providesTags: ["courses"],
+    }),
+
+    // Update lecture progress
+    updateLectureProgress: builder.mutation({
+      query: (data) => ({
+        url: "/lectures/update-progress",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // Get lecture progress
+    getLectureProgress: builder.query({
+      query: (lectureId) => `/lectures/progress/${lectureId}`,
+    }),
+
+    // Get course progress summary
+    getCourseProgress: builder.query({
+      query: (courseId) => `/course-progress/${courseId}`,
+    }),
   }),
 });
 
@@ -100,6 +119,9 @@ export const {
 
   // User hooks
   useGetCourseByUserQuery,
+  useUpdateLectureProgressMutation,
+  useGetLectureProgressQuery,
+  useGetCourseProgressQuery,
 
   // Section hooks
   useAddSectionMutation,
