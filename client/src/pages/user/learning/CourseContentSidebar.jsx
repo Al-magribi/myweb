@@ -7,116 +7,132 @@ const CourseContentSidebar = ({
   selectedLecture,
   setSelectedLecture,
   formatDuration,
+  lectureProgressMap = {}, // new prop: { [lectureId]: { is_completed: true/false, ... } }
 }) => (
   <div
-    className='p-4 h-100 overflow-auto custom-scrollbar'
+    className="p-0 h-100 bg-white border-start"
     style={{ maxHeight: "100vh" }}
   >
-    <div className='bg-white rounded-4 shadow-sm p-0 mb-4 border'>
-      <div className='d-flex align-items-center justify-content-between px-4 py-3 border-bottom'>
-        <span className='fw-bold fs-5 d-flex align-items-center'>
-          <i className='bi bi-list-ul me-2 text-primary'></i> Course content
-        </span>
-        <span className='badge bg-light text-dark fw-normal'>
-          {sections.reduce((acc, s) => acc + s.lectures.length, 0)} lectures
-        </span>
-      </div>
-      <div
-        className='overflow-auto'
-        style={{ maxHeight: "75vh", transition: "max-height 0.3s" }}
-      >
-        {sections.map((section) => (
-          <div key={section.id} className='mb-1'>
+    <div className="px-4 pt-4 pb-2 border-bottom">
+      <span className="fw-bold fs-6">Course content</span>
+    </div>
+    <div className="overflow-auto" style={{ maxHeight: "calc(100vh - 60px)" }}>
+      {sections.map((section, sectionIdx) => {
+        // Hitung total durasi section (dalam detik)
+        const totalSectionDuration = section.lectures.reduce(
+          (acc, lec) => acc + (lec.duration || 0),
+          0
+        );
+        // Hitung jumlah lecture selesai di section ini
+        const completedCount = section.lectures.filter(
+          (lec) => lectureProgressMap[lec.id]?.is_completed === true
+        ).length;
+        return (
+          <div key={section.id} className="border-bottom">
+            {/* Section Header */}
             <div
-              className='fw-semibold px-4 py-2 d-flex align-items-center justify-content-between section-title'
-              style={{
-                fontSize: "1rem",
-                cursor: "pointer",
-                borderLeft:
-                  expandedSection === section.id
-                    ? "4px solid #0d6efd"
-                    : "4px solid transparent",
-                background:
-                  expandedSection === section.id ? "#f5faff" : "transparent",
-                transition: "all 0.2s",
-              }}
+              className="d-flex align-items-center justify-content-between px-4 py-3 bg-white section-title"
+              style={{ cursor: "pointer" }}
               onClick={() =>
                 setExpandedSection(
                   expandedSection === section.id ? null : section.id
                 )
               }
             >
-              <div className='d-flex align-items-center'>
+              <div className="d-flex flex-column">
+                <div className="fw-bold">
+                  {`Section ${sectionIdx + 1}: ${section.title}`}
+                </div>
+
+                <span className="small text-muted">
+                  {`${completedCount} / ${
+                    section.lectures.length
+                  } | ${formatDuration(totalSectionDuration)}`}
+                </span>
+              </div>
+
+              <div className="d-flex align-items-center gap-3">
                 <i
                   className={`bi ${
                     expandedSection === section.id
-                      ? "bi-folder2-open"
-                      : "bi-folder2"
-                  } me-2 text-secondary`}
+                      ? "bi-chevron-up"
+                      : "bi-chevron-down"
+                  } text-muted`}
                 ></i>
-                <div className='d-flex flex-column align-items-start'>
-                  <span>{section.title}</span>
-                  <span className='text-muted small'>
-                    {section.lectures.length} lectures
-                  </span>
-                </div>
               </div>
-
-              <i
-                className={`ms-2 bi ${
-                  expandedSection === section.id
-                    ? "bi-chevron-up"
-                    : "bi-chevron-down"
-                } text-muted`}
-              ></i>
             </div>
+            {/* Lectures List */}
             <ul
-              className={`list-group list-group-flush mb-2 px-2 ${
+              className={`list-group list-group-flush ${
                 expandedSection === section.id ? "show" : "collapse"
               }`}
-              style={{ transition: "all 0.3s" }}
             >
-              {section.lectures.map((lecture) => (
-                <li
-                  key={lecture.id}
-                  className={`list-group-item d-flex justify-content-between align-items-center px-3 py-2 border-0 lecture-item ${
-                    selectedLecture?.id === lecture.id
-                      ? "bg-primary bg-opacity-10 border-start border-4 border-primary text-primary"
-                      : "bg-transparent"
-                  } `}
-                  style={{
-                    cursor: "pointer",
-                    borderRadius: 8,
-                    marginBottom: 2,
-                    transition: "background 0.2s, border 0.2s",
-                  }}
-                  onClick={() => setSelectedLecture(lecture)}
-                  onMouseOver={(e) => e.currentTarget.classList.add("bg-light")}
-                  onMouseOut={(e) =>
-                    e.currentTarget.classList.remove("bg-light")
-                  }
-                >
-                  <div className='d-flex align-items-center gap-2'>
-                    <i
-                      className={`bi bi-play-circle${
-                        selectedLecture?.id === lecture.id ? "-fill" : ""
-                      } me-2 ${
-                        selectedLecture?.id === lecture.id
-                          ? "text-primary"
-                          : "text-secondary"
-                      }`}
-                    ></i>
-                    <span className='small fw-semibold'>{lecture.title}</span>
-                  </div>
-                  <span className='badge rounded-pill bg-light text-dark border border-1 border-secondary small px-2 py-1'>
-                    {formatDuration(lecture.duration)}
-                  </span>
-                </li>
-              ))}
+              {section.lectures.map((lecture, idx) => {
+                const progress = lectureProgressMap[lecture.id];
+                const isCompleted = progress?.is_completed === true;
+                return (
+                  <li
+                    key={lecture.id}
+                    className={`list-group-item d-flex align-items-center justify-content-between px-4 py-2 border-0 ${
+                      selectedLecture?.id === lecture.id
+                        ? "bg-primary bg-opacity-10 text-primary"
+                        : "bg-transparent"
+                    }`}
+                    style={{ cursor: "pointer", borderRadius: 0 }}
+                    onClick={() => setSelectedLecture(lecture)}
+                  >
+                    <div className="d-flex align-items-center gap-2 flex-grow-1">
+                      <input
+                        type="checkbox"
+                        className="form-check-input me-2"
+                        style={{ pointerEvents: "none" }}
+                        checked={isCompleted}
+                        readOnly
+                      />
+                      <span className="small text-muted">{idx + 1}.</span>
+                      <span className="small fw-semibold ms-1">
+                        {lecture.title}
+                      </span>
+                    </div>
+                    <div className="d-flex align-items-center gap-2">
+                      {/* Resource button jika ada resource, contoh: */}
+                      {lecture.resources && lecture.resources.length > 0 && (
+                        <div className="dropdown">
+                          <button
+                            className="btn btn-sm btn-outline-secondary dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            Resources
+                          </button>
+                          <ul className="dropdown-menu">
+                            {lecture.resources.map((res, i) => (
+                              <li key={i}>
+                                <a
+                                  className="dropdown-item"
+                                  href={res.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {res.name}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      <span className="small text-muted ms-2">
+                        {formatDuration(lecture.duration)}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   </div>
 );

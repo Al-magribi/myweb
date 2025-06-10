@@ -347,6 +347,7 @@ router.get("/landing-page/:id", async (req, res) => {
     });
   }
 });
+
 // Delete course
 router.delete("/delete-course/:id", authorize("admin"), async (req, res) => {
   const { id } = req.params;
@@ -709,6 +710,45 @@ router.get(
       res.status(500).json({
         error: error.message,
         detail: "Failed to get course progress",
+      });
+    }
+  }
+);
+
+// Get all lecture progress for a course for the current user
+router.get(
+  "/lectures/all-progress/:course_id",
+  authorize("user"),
+  async (req, res) => {
+    try {
+      const { id } = req.user;
+      const { course_id } = req.params;
+      // Get all lectures in the course
+      const lecturesResult = await client.query(
+        `SELECT l.id as lecture_id
+         FROM c_lectures l
+         JOIN c_sections s ON l.section_id = s.id
+         WHERE s.course_id = $1`,
+        [course_id]
+      );
+      const lectureIds = lecturesResult.rows.map((row) => row.lecture_id);
+      if (lectureIds.length === 0) {
+        return res.json([]);
+      }
+      // Get all progress for these lectures for this user
+      const progressResult = await client.query(
+        `SELECT lecture_id, watch_duration, total_duration, is_completed, last_watched_at
+         FROM c_lecture_progress
+         WHERE user_id = $1 AND lecture_id = ANY($2::int[])`,
+        [id, lectureIds]
+      );
+      // Return as array
+      res.json(progressResult.rows);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        error: error.message,
+        detail: "Failed to get all lecture progress",
       });
     }
   }

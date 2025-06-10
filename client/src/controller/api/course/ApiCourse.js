@@ -106,6 +106,11 @@ export const ApiCourse = createApi({
     getCourseProgress: builder.query({
       query: (courseId) => `/course-progress/${courseId}`,
     }),
+
+    // NEW: Get all lecture progress for a course
+    getAllLectureProgress: builder.query({
+      query: (courseId) => `/lectures/all-progress/${courseId}`,
+    }),
   }),
 });
 
@@ -130,4 +135,7 @@ export const {
   // Lecture hooks
   useAddLectureMutation,
   useDeleteLectureMutation,
+
+  // NEW: Get all lecture progress for a course
+  useGetAllLectureProgressQuery,
 } = ApiCourse;

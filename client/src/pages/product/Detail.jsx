@@ -6,7 +6,7 @@ import SEO from "../../components/SEO/SEO";
 import {
   useGetProductByIdQuery,
   useGetProductReviewsQuery,
-} from "../../controller/api/admin/ApiProduct";
+} from "../../controller/api/product/ApiProduct";
 import Form from "./Form";
 import FormReview from "./FormReview";
 import Reviews from "./Reviews";
@@ -87,16 +87,16 @@ const Detail = () => {
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <i key={`full-${i}`} className='bi bi-star-fill text-warning'></i>
+        <i key={`full-${i}`} className="bi bi-star-fill text-warning"></i>
       );
     }
     if (hasHalfStar) {
-      stars.push(<i key='half' className='bi bi-star-half text-warning'></i>);
+      stars.push(<i key="half" className="bi bi-star-half text-warning"></i>);
     }
     const emptyStars = 5 - Math.ceil(rating);
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
-        <i key={`empty-${i}`} className='bi bi-star text-warning'></i>
+        <i key={`empty-${i}`} className="bi bi-star text-warning"></i>
       );
     }
 
@@ -108,20 +108,21 @@ const Detail = () => {
   const renderRatingBar = (stars, count, totalReviews) => {
     const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
     return (
-      <div className='d-flex align-items-center mb-2'>
-        <div className='me-2' style={{ width: "60px" }}>
+      <div className="d-flex align-items-center mb-2">
+        <div className="me-2" style={{ width: "60px" }}>
           {stars} stars
         </div>
-        <div className='progress flex-grow-1' style={{ height: "8px" }}>
+        <div className="progress flex-grow-1" style={{ height: "8px" }}>
           <div
-            className='progress-bar bg-warning'
-            role='progressbar'
+            className="progress-bar bg-warning"
+            role="progressbar"
             style={{ width: `${percentage}%` }}
             aria-valuenow={percentage}
-            aria-valuemin='0'
-            aria-valuemax='100'></div>
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
         </div>
-        <div className='ms-2' style={{ width: "40px" }}>
+        <div className="ms-2" style={{ width: "40px" }}>
           {count}
         </div>
       </div>
@@ -129,50 +130,50 @@ const Detail = () => {
   };
 
   return (
-    <div className='bg-light'>
+    <div className="bg-light">
       <SEO {...seoData} />
       <Navbar />
-      <main className='container py-4' style={{ marginTop: 80 }}>
-        <div className='row'>
+      <main className="container py-4" style={{ marginTop: 80 }}>
+        <div className="row">
           {/* Product Image - Always First on Mobile */}
-          <div className='col-12 d-md-none mb-4'>
+          <div className="col-12 d-md-none mb-4">
             <img
               src={product?.image}
               alt={product?.name}
-              className='img-fluid rounded border border-2'
+              className="img-fluid rounded border border-2"
               style={{ width: "100%", height: "auto" }}
             />
           </div>
 
           {/* Left Column: Image (Desktop) + Customer Reviews */}
-          <div className='col-md-6 mb-4 order-md-1 order-3'>
+          <div className="col-md-6 mb-4 order-md-1 order-3">
             {/* Product Image - Desktop Only */}
-            <div className='d-none d-md-block'>
+            <div className="d-none d-md-block">
               <img
                 src={product?.image}
                 alt={product?.name}
-                className='img-fluid rounded border border-2 mb-4'
+                className="img-fluid rounded border border-2 mb-4"
                 style={{ width: "100%", height: "auto" }}
               />
             </div>
 
             {/* Customer Reviews Summary */}
-            <div className='mb-4'>
-              <h4 className='mb-3'>Customer Reviews</h4>
-              <div className='card mb-4'>
-                <div className='card-body'>
-                  <div className='row align-items-center'>
-                    <div className='col-md-4 text-center'>
-                      <h2 className='display-4 mb-0'>
+            <div className="mb-4">
+              <h4 className="mb-3">Customer Reviews</h4>
+              <div className="card mb-4">
+                <div className="card-body">
+                  <div className="row align-items-center">
+                    <div className="col-md-4 text-center">
+                      <h2 className="display-4 mb-0">
                         {Number(product?.rating).toFixed(1)}
                       </h2>
-                      <div className='mb-2'>{renderStars(product?.rating)}</div>
-                      <p className='text-muted mb-0'>
+                      <div className="mb-2">{renderStars(product?.rating)}</div>
+                      <p className="text-muted mb-0">
                         {product?.reviewcount} ulasan
                       </p>
                     </div>
-                    <div className='col-md-8'>
-                      <div className='rating-breakdown'>
+                    <div className="col-md-8">
+                      <div className="rating-breakdown">
                         {renderRatingBar(
                           5,
                           product?.ratingBreakdown[5],
@@ -216,22 +217,22 @@ const Detail = () => {
           </div>
 
           {/* Right Column: Info, Features, Buy, Write Review */}
-          <div className='col-md-6 bg-white p-4 rounded-3 border border-2 order-md-2 order-2'>
-            <h1 className='mb-3'>{product?.name}</h1>
-            <h2 className='text-primary mb-4'>
+          <div className="col-md-6 bg-white p-4 rounded-3 border border-2 order-md-2 order-2">
+            <h1 className="mb-3">{product?.name}</h1>
+            <h2 className="text-primary mb-4">
               Rp {parseFloat(product?.price).toLocaleString("id-ID")}
             </h2>
 
-            <div className='d-flex align-items-center mb-3'>
-              <div className='me-2'>{renderStars(product?.rating)}</div>
-              <span className='me-2'>{Number(product?.rating).toFixed(1)}</span>
-              <span className='text-muted'>
+            <div className="d-flex align-items-center mb-3">
+              <div className="me-2">{renderStars(product?.rating)}</div>
+              <span className="me-2">{Number(product?.rating).toFixed(1)}</span>
+              <span className="text-muted">
                 ({product?.reviewcount} ulasan)
               </span>
             </div>
 
-            <div className='text-success mb-4'>
-              <i className='bi bi-graph-up-arrow me-1'></i>
+            <div className="text-success mb-4">
+              <i className="bi bi-graph-up-arrow me-1"></i>
               {(Number(product?.totalsales) + start).toLocaleString(
                 "id-ID"
               )}{" "}
@@ -239,34 +240,36 @@ const Detail = () => {
             </div>
 
             <div
-              className='text-muted mb-4'
+              className="text-muted mb-4"
               dangerouslySetInnerHTML={createMarkup(product?.description)}
             />
 
-            <div className='mb-4'>
+            <div className="mb-4">
               <h4>Fitur Produk</h4>
-              <ul className='list-unstyled'>
+              <ul className="list-unstyled">
                 {product?.features?.map((feature, index) => (
-                  <li key={index} className='mb-2'>
-                    <i className='bi bi-check-circle-fill text-success me-2'></i>
+                  <li key={index} className="mb-2">
+                    <i className="bi bi-check-circle-fill text-success me-2"></i>
                     {feature}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className='d-grid gap-2 mb-4'>
+            <div className="d-grid gap-2 mb-4">
               <button
-                data-bs-toggle='modal'
-                data-bs-target='#order'
-                className='btn btn-success btn-lg'>
+                data-bs-toggle="modal"
+                data-bs-target="#order"
+                className="btn btn-success btn-lg"
+              >
                 Beli Sekarang
               </button>
 
               <button
-                className='btn btn-outline-warning btn-lg'
-                data-bs-toggle='modal'
-                data-bs-target='#checkPayment'>
+                className="btn btn-outline-warning btn-lg"
+                data-bs-toggle="modal"
+                data-bs-target="#checkPayment"
+              >
                 Cek Pembayaran
               </button>
             </div>

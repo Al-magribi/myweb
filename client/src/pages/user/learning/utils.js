@@ -6,10 +6,28 @@ export const getYoutubeId = (url) => {
   return match && match[2].length === 11 ? match[2] : null;
 };
 
-export const formatDuration = (minutes) => {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return hours > 0 ? `${hours}h ${mins}m` : `${mins}min`;
+export const formatDuration = (totalSeconds) => {
+  if (
+    typeof totalSeconds !== "number" ||
+    isNaN(totalSeconds) ||
+    totalSeconds < 0
+  )
+    return "00:00";
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    // Format: h:mm:ss
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  } else {
+    // Format: mm:ss
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  }
 };
 
 export const formatPrice = (price) => {
