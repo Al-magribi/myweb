@@ -11,9 +11,9 @@ const CourseContentSidebar = ({
 }) => (
   <div
     className="p-0 h-100 bg-white border-start"
-    style={{ maxHeight: "100vh" }}
+    style={{ minHeight: "100vh" }}
   >
-    <div className="px-4 pt-4 pb-2 border-bottom">
+    <div className="p-4 border-bottom">
       <span className="fw-bold fs-6">Course content</span>
     </div>
     <div className="overflow-auto" style={{ maxHeight: "calc(100vh - 60px)" }}>

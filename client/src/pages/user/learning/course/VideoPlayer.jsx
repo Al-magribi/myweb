@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-import useVideoProgress from "../../../hooks/useVideoProgress";
+import useVideoProgress from "../../../../hooks/useVideoProgress";
 import { useSelector } from "react-redux";
-import { useGetLectureProgressQuery } from "../../../controller/api/course/ApiCourse";
+import { useGetLectureProgressQuery } from "../../../../controller/api/course/ApiCourse";
 
 const getYoutubeEmbedUrl = (url) => {
   // Mendukung format youtu.be/xxxx dan youtube.com/watch?v=xxxx

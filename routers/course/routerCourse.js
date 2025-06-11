@@ -267,6 +267,20 @@ router.get("/get-course-by-user", authorize("user"), async (req, res) => {
 });
 
 // Get course by ID with all related data
+router.get("/lectures", authorize("user", "admin"), async (req, res) => {
+  try {
+    const { courseId } = req.query;
+    const { rows } = await client.query(
+      "SELECT * FROM c_lectures WHERE course_id = $1 ORDER BY position ASC",
+      [courseId]
+    );
+    res.json({ lectures: rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {

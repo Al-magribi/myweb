@@ -7,6 +7,7 @@ import { ApiProduct } from "./api/product/ApiProduct";
 import { ApiDash } from "./api/dash/ApiDash";
 import { ApiSetting } from "./api/setting/ApiSetting";
 import { ApiCourse } from "./api/course/ApiCourse";
+import { ApiQa } from "./api/course/ApiQa";
 
 // Order
 import { ApiOrder } from "./api/order/ApiOrder";
@@ -21,6 +22,7 @@ export const store = configureStore({
     [ApiDash.reducerPath]: ApiDash.reducer,
     [ApiSetting.reducerPath]: ApiSetting.reducer,
     [ApiCourse.reducerPath]: ApiCourse.reducer,
+    [ApiQa.reducerPath]: ApiQa.reducer,
 
     [ApiOrder.reducerPath]: ApiOrder.reducer,
   },
@@ -31,6 +33,7 @@ export const store = configureStore({
       ApiDash.middleware,
       ApiSetting.middleware,
       ApiCourse.middleware,
+      ApiQa.middleware,
 
       ApiOrder.middleware,
     ]),

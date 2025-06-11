@@ -4,10 +4,13 @@ import {
   useGetCourseByIdQuery,
   useGetAllLectureProgressQuery,
 } from "../../../controller/api/course/ApiCourse";
-import VideoPlayer from "./VideoPlayer";
-import CourseTabs from "./CourseTabs";
-import CourseContentSidebar from "./CourseContentSidebar";
-import { getYoutubeId, formatDuration, formatPrice } from "./utils";
+import VideoPlayer from "./course/VideoPlayer";
+import CourseTabs from "./course/CourseTabs";
+import CourseContentSidebar from "./course/CourseContentSidebar";
+import { getYoutubeId, formatDuration, formatPrice } from "./course/utils";
+import Overview from "./components/Overview";
+import Qa from "./components/qa/Qa";
+import Notes from "./components/Notes";
 
 const TABS = [
   { key: "overview", label: "Overview" },
@@ -70,66 +73,18 @@ const Learning = () => {
   const renderTabContent = () => {
     if (activeTab === "overview") {
       return (
-        <div className="p-4">
-          <h5 className="fw-bold mb-3">{data.title}</h5>
-          <div className="mb-2">
-            <span className="badge bg-secondary me-2">{data.category}</span>
-            <span className="badge bg-info">{data.level}</span>
-          </div>
-          <div className="mb-2 text-muted">
-            <i className="bi bi-person-circle me-2"></i>
-            {data.instructor}
-          </div>
-          <div className="mb-2 text-muted">
-            <i className="bi bi-clock me-2"></i>
-            {formatDuration(data.duration)}
-          </div>
-          <div className="mb-2 text-muted">
-            <i className="bi bi-currency-dollar me-2"></i>
-            {formatPrice(data.price)}
-          </div>
-          <div
-            className="mt-3 text-muted"
-            dangerouslySetInnerHTML={{ __html: data.description }}
-          />
-        </div>
+        <Overview
+          data={data}
+          formatDuration={formatDuration}
+          formatPrice={formatPrice}
+        />
       );
     }
     if (activeTab === "qa") {
-      return (
-        <div className="p-4">
-          <h5 className="fw-bold mb-3">Q&amp;A</h5>
-          <div className="mb-3">
-            <input
-              className="form-control"
-              placeholder="Search all course questions"
-            />
-          </div>
-          <div className="d-flex flex-wrap gap-2 mb-3">
-            <select className="form-select w-auto">
-              <option>All lectures</option>
-            </select>
-            <select className="form-select w-auto">
-              <option>Sort by recommended</option>
-            </select>
-            <button className="btn btn-outline-primary">
-              Filter questions
-            </button>
-          </div>
-          <div className="mt-4">
-            <div className="fw-bold mb-2">All questions in this course (0)</div>
-            <div className="text-muted">No questions yet.</div>
-          </div>
-        </div>
-      );
+      return <Qa courseId={id} lectureId={currentLecture?.id} />;
     }
     if (activeTab === "notes") {
-      return (
-        <div className="p-4">
-          <h5 className="fw-bold mb-3">Notes</h5>
-          <div className="text-muted">No notes yet.</div>
-        </div>
-      );
+      return <Notes />;
     }
     return null;
   };

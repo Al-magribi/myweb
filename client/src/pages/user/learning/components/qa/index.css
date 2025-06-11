@@ -1,0 +1,23 @@
+.react-quill {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.react-quill .ql-container {
+  flex: 1 !important; /* Agar container konten mengambil seluruh tinggi yang tersedia */
+  overflow-y: auto !important; /* Tambahkan scroll jika kontennya melampaui area */
+}
+
+.ql-container {
+  border: none !important;
+}
+
+.ql-toolbar {
+  border: none !important;
+}
+
+.ql-editor {
+  border: none !important;
+  z-index: 200 !important;
+}
