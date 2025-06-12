@@ -86,7 +86,7 @@ const Qa = ({ courseId, lectureId }) => {
           `/api/courses/lectures?courseId=${courseId}`
         );
         const data = await response.json();
-        setLectures(data.lectures || []);
+        setLectures(data || []);
       } catch (error) {
         console.error("Error fetching lectures:", error);
       }

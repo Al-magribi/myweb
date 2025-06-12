@@ -24,10 +24,11 @@ import {
 import { toast } from "react-hot-toast";
 import Layout from "../../layout/Layout";
 
-const Section = ({ section, index, name }) => {
+const Section = ({ section, index, name, refetchCourse }) => {
   const [addSection] = useAddSectionMutation();
   const [deleteSection] = useDeleteSectionMutation();
-  const [addLecture, { isLoading, isSuccess, data }] = useAddLectureMutation();
+  const [addLecture, { isLoading, isSuccess, data, refetch }] =
+    useAddLectureMutation();
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showAddLecture, setShowAddLecture] = useState(false);
@@ -42,7 +43,6 @@ const Section = ({ section, index, name }) => {
     duration: "",
     youtubeLink: "",
   });
-  const [lectures, setLectures] = useState(section.lectures || []);
 
   // Configure sensors for drag and drop
   const sensors = useSensors(
@@ -71,14 +71,19 @@ const Section = ({ section, index, name }) => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      const oldIndex = lectures.findIndex(
+      const oldIndex = (section.lectures || []).findIndex(
         (lecture) => lecture.id === active.id
       );
-      const newIndex = lectures.findIndex((lecture) => lecture.id === over.id);
+      const newIndex = (section.lectures || []).findIndex(
+        (lecture) => lecture.id === over.id
+      );
 
       // Update local state immediately
-      const reorderedLectures = arrayMove(lectures, oldIndex, newIndex);
-      setLectures(reorderedLectures);
+      const reorderedLectures = arrayMove(
+        section.lectures || [],
+        oldIndex,
+        newIndex
+      );
 
       // Update positions in the database
       try {
@@ -99,7 +104,6 @@ const Section = ({ section, index, name }) => {
       } catch (error) {
         console.error("Failed to update lecture positions:", error);
         // Revert local state if database update fails
-        setLectures(section.lectures);
       }
     }
   };
@@ -115,6 +119,7 @@ const Section = ({ section, index, name }) => {
         position: section.position,
       });
       setIsEditing(false);
+      refetch();
     } catch (error) {
       console.error("Failed to update section:", error);
     }
@@ -144,18 +149,15 @@ const Section = ({ section, index, name }) => {
     }
     setDurationError("");
     try {
-      const result = await addLecture({
+      await addLecture({
         section_id: section.id,
         title: newLecture.title,
         description: newLecture.description,
         duration: parseDuration(newLecture.duration),
         video_url: newLecture.youtubeLink,
-        position: lectures.length,
+        position: section.lectures?.length || 0,
         is_preview: false,
       });
-
-      // Update local state with new lecture
-      setLectures([...lectures, result.data]);
 
       // Reset form
       setNewLecture({
@@ -165,6 +167,7 @@ const Section = ({ section, index, name }) => {
         youtubeLink: "",
       });
       setShowAddLecture(false);
+      if (refetchCourse) refetchCourse();
     } catch (error) {
       console.error("Failed to add lecture:", error);
     }
@@ -178,9 +181,9 @@ const Section = ({ section, index, name }) => {
 
   if (isLoading) {
     return (
-      <div className='d-flex justify-content-center align-items-center min-vh-100'>
-        <div className='spinner-border text-primary' role='status'>
-          <span className='visually-hidden'>Loading...</span>
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
         </div>
       </div>
     );
@@ -188,14 +191,14 @@ const Section = ({ section, index, name }) => {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-      <div className='card-body'>
+      <div className="card-body">
         {isEditing ? (
           <form onSubmit={handleEditSection}>
-            <div className='mb-3'>
-              <label className='form-label'>Section Title</label>
+            <div className="mb-3">
+              <label className="form-label">Section Title</label>
               <input
-                type='text'
-                className='form-control'
+                type="text"
+                className="form-control"
                 value={editSection.title}
                 onChange={(e) =>
                   setEditSection({ ...editSection, title: e.target.value })
@@ -203,10 +206,10 @@ const Section = ({ section, index, name }) => {
                 required
               />
             </div>
-            <div className='mb-3'>
-              <label className='form-label'>Section Description</label>
+            <div className="mb-3">
+              <label className="form-label">Section Description</label>
               <textarea
-                className='form-control'
+                className="form-control"
                 value={editSection.description}
                 onChange={(e) =>
                   setEditSection({
@@ -218,13 +221,13 @@ const Section = ({ section, index, name }) => {
                 required
               />
             </div>
-            <div className='d-flex gap-2'>
-              <button type='submit' className='btn btn-primary flex-grow-1'>
+            <div className="d-flex gap-2">
+              <button type="submit" className="btn btn-primary flex-grow-1">
                 Save Changes
               </button>
               <button
-                type='button'
-                className='btn btn-light'
+                type="button"
+                className="btn btn-light"
                 onClick={() => setIsEditing(false)}
               >
                 Cancel
@@ -233,27 +236,27 @@ const Section = ({ section, index, name }) => {
           </form>
         ) : (
           <>
-            <div className='d-flex justify-content-between align-items-start mb-3'>
-              <div className='d-flex align-items-center'>
+            <div className="d-flex justify-content-between align-items-start mb-3">
+              <div className="d-flex align-items-center">
                 <div
-                  className='me-3 cursor-grab'
+                  className="me-3 cursor-grab"
                   {...listeners}
                   style={{ cursor: "grab" }}
                 >
-                  <i className='bi bi-grip-vertical fs-4'></i>
+                  <i className="bi bi-grip-vertical fs-4"></i>
                 </div>
                 <div>
-                  <h5 className='card-title mb-1'>
+                  <h5 className="card-title mb-1">
                     Section {index + 1}: {section.title}
                   </h5>
-                  <p className='card-text text-muted mb-0'>
+                  <p className="card-text text-muted mb-0">
                     {section.description}
                   </p>
                 </div>
               </div>
-              <div className='d-flex gap-2'>
+              <div className="d-flex gap-2">
                 <button
-                  className='btn btn-light'
+                  className="btn btn-light"
                   onClick={() => setIsExpanded(!isExpanded)}
                   title={isExpanded ? "Hide Lectures" : "Show Lectures"}
                 >
@@ -262,16 +265,16 @@ const Section = ({ section, index, name }) => {
                   ></i>
                 </button>
                 <button
-                  className='btn btn-light'
+                  className="btn btn-light"
                   onClick={() => setIsEditing(true)}
                 >
-                  <i className='bi bi-pencil'></i>
+                  <i className="bi bi-pencil"></i>
                 </button>
                 <button
-                  className='btn btn-light text-danger'
+                  className="btn btn-light text-danger"
                   onClick={handleDeleteSection}
                 >
-                  <i className='bi bi-trash'></i>
+                  <i className="bi bi-trash"></i>
                 </button>
               </div>
             </div>
@@ -284,10 +287,10 @@ const Section = ({ section, index, name }) => {
                 onDragEnd={handleDragEnd}
               >
                 <SortableContext
-                  items={lectures.map((lecture) => lecture.id)}
+                  items={(section.lectures || []).map((lecture) => lecture.id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  {lectures.map((lecture, lectureIndex) => (
+                  {(section.lectures || []).map((lecture, lectureIndex) => (
                     <Lecture
                       key={lecture.id}
                       lecture={lecture}
@@ -301,22 +304,22 @@ const Section = ({ section, index, name }) => {
               {/* Add Lecture Button/Form */}
               {!showAddLecture ? (
                 <button
-                  className='btn btn-outline-primary w-100 mt-3'
+                  className="btn btn-outline-primary w-100 mt-3"
                   onClick={() => setShowAddLecture(true)}
                 >
-                  <i className='bi bi-plus-lg me-2'></i>
+                  <i className="bi bi-plus-lg me-2"></i>
                   Add Lecture
                 </button>
               ) : (
-                <div className='card border-0 bg-light mt-3'>
-                  <div className='card-body'>
+                <div className="card border-0 bg-light mt-3">
+                  <div className="card-body">
                     <form onSubmit={handleAddLecture}>
-                      <div className='mb-3'>
-                        <label className='form-label'>Lecture Title</label>
+                      <div className="mb-3">
+                        <label className="form-label">Lecture Title</label>
                         <input
-                          type='text'
-                          className='form-control'
-                          placeholder='Enter lecture title'
+                          type="text"
+                          className="form-control"
+                          placeholder="Enter lecture title"
                           value={newLecture.title}
                           onChange={(e) =>
                             setNewLecture({
@@ -327,13 +330,13 @@ const Section = ({ section, index, name }) => {
                           required
                         />
                       </div>
-                      <div className='mb-3'>
-                        <label className='form-label'>
+                      <div className="mb-3">
+                        <label className="form-label">
                           Lecture Description
                         </label>
                         <textarea
-                          className='form-control'
-                          placeholder='Enter lecture description'
+                          className="form-control"
+                          placeholder="Enter lecture description"
                           value={newLecture.description}
                           onChange={(e) =>
                             setNewLecture({
@@ -345,13 +348,13 @@ const Section = ({ section, index, name }) => {
                           required
                         />
                       </div>
-                      <div className='mb-3'>
-                        <label className='form-label'>Duration</label>
-                        <div className='input-group'>
+                      <div className="mb-3">
+                        <label className="form-label">Duration</label>
+                        <div className="input-group">
                           <input
-                            type='text'
-                            className='form-control'
-                            placeholder='MM:SS'
+                            type="text"
+                            className="form-control"
+                            placeholder="MM:SS"
                             value={newLecture.duration}
                             onChange={(e) => {
                               setNewLecture({
@@ -359,37 +362,37 @@ const Section = ({ section, index, name }) => {
                                 duration: e.target.value,
                               });
                             }}
-                            pattern='[0-9]{2}:[0-5][0-9]'
-                            title='Please enter duration in MM:SS format (e.g., 02:30)'
+                            pattern="[0-9]{2}:[0-5][0-9]"
+                            title="Please enter duration in MM:SS format (e.g., 02:30)"
                             required
                             style={{
                               fontFamily: "monospace",
                               letterSpacing: "1px",
                             }}
                           />
-                          <span className='input-group-text'>
-                            <i className='bi bi-clock'></i>
+                          <span className="input-group-text">
+                            <i className="bi bi-clock"></i>
                           </span>
                         </div>
-                        <div className='form-text'>
-                          <small className='text-muted'>
-                            <i className='bi bi-info-circle me-1'></i>
+                        <div className="form-text">
+                          <small className="text-muted">
+                            <i className="bi bi-info-circle me-1"></i>
                             Enter duration in MM:SS format (e.g., 02:30 for 2
                             minutes and 30 seconds)
                           </small>
                         </div>
                         {durationError && (
-                          <div className='text-danger small mt-1'>
+                          <div className="text-danger small mt-1">
                             {durationError}
                           </div>
                         )}
                       </div>
-                      <div className='mb-4'>
-                        <label className='form-label'>YouTube Video URL</label>
+                      <div className="mb-4">
+                        <label className="form-label">YouTube Video URL</label>
                         <input
-                          type='url'
-                          className='form-control'
-                          placeholder='Enter YouTube video URL'
+                          type="url"
+                          className="form-control"
+                          placeholder="Enter YouTube video URL"
                           value={newLecture.youtubeLink}
                           onChange={(e) =>
                             setNewLecture({
@@ -400,16 +403,16 @@ const Section = ({ section, index, name }) => {
                           required
                         />
                       </div>
-                      <div className='d-flex gap-2'>
+                      <div className="d-flex gap-2">
                         <button
-                          type='submit'
-                          className='btn btn-primary flex-grow-1'
+                          type="submit"
+                          className="btn btn-primary flex-grow-1"
                         >
                           Add Lecture
                         </button>
                         <button
-                          type='button'
-                          className='btn btn-light'
+                          type="button"
+                          className="btn btn-light"
                           onClick={() => setShowAddLecture(false)}
                         >
                           Cancel

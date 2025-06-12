@@ -270,11 +270,29 @@ router.get("/get-course-by-user", authorize("user"), async (req, res) => {
 router.get("/lectures", authorize("user", "admin"), async (req, res) => {
   try {
     const { courseId } = req.query;
-    const { rows } = await client.query(
-      "SELECT * FROM c_lectures WHERE course_id = $1 ORDER BY position ASC",
+
+    // Get all sections for the course
+    const sectionsResult = await client.query(
+      "SELECT * FROM c_sections WHERE course_id = $1 ORDER BY position ASC",
       [courseId]
     );
-    res.json({ lectures: rows });
+
+    // For each section, get its lectures
+    const sectionsWithLectures = await Promise.all(
+      sectionsResult.rows.map(async (section) => {
+        const lecturesResult = await client.query(
+          "SELECT * FROM c_lectures WHERE section_id = $1 ORDER BY position ASC",
+          [section.id]
+        );
+
+        return {
+          ...section,
+          lectures: lecturesResult.rows,
+        };
+      })
+    );
+
+    res.json(sectionsWithLectures);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
