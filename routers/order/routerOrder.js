@@ -477,6 +477,8 @@ router.post("/get-token", async (req, res) => {
       config
     );
 
+    console.log(response.data);
+
     res.status(200).json({
       token: response.data.token,
       order_id: order,

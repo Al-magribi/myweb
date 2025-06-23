@@ -63,9 +63,6 @@ const AI = () => {
     return `${hours}:${minutes}:${seconds}`;
   };
 
-  console.log(product);
-  console.log(reviewsData);
-
   const calculatePercentage = (count) => {
     return (count / product?.reviewcount) * 100;
   };
