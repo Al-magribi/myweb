@@ -12,7 +12,7 @@ import { ApiQa } from "./api/course/ApiQa";
 // Order
 import { ApiOrder } from "./api/order/ApiOrder";
 
-const isDev = import.meta.env.VITE_MODE === "development";
+const isDev = import.meta.env.VITE_MODE === "development" ? true : false;
 
 export const store = configureStore({
   reducer: {

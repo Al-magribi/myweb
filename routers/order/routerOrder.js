@@ -147,20 +147,24 @@ router.post("/create-order", async (req, res) => {
     // Validate input
     validateOrderInput(req.body);
 
+    let order = null;
+    let userId = null;
+
     // Handle order items based on type
     if (type === "product") {
       // Create order in database
-      const order = await createOrderInDB(req.body);
-
+      order = await createOrderInDB(req.body);
       await createProductOrderItems(order.id, itemId, quantity, total_amount);
     } else {
       // For course type, create user account if status is settlement
-      let userId;
       if (status === "settlement") {
         userId = await createUserAccount(name, email, phone);
       }
       console.log(userId);
       await createCourseEnrollment(itemId, userId, status, total_amount);
+
+      // For course type, we need to create a minimal order record for tracking
+      order = await createOrderInDB(req.body);
     }
 
     // Send email for completed orders
@@ -476,8 +480,6 @@ router.post("/get-token", async (req, res) => {
       dataPayment,
       config
     );
-
-    console.log(response.data);
 
     res.status(200).json({
       token: response.data.token,
