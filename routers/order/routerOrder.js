@@ -231,70 +231,99 @@ const updateStatusOrder = async (status, orderid) => {
   if (status === "settlement") {
     const orderData = result.rows[0];
     let itemUrl;
+    let emailSent = false;
 
-    if (orderData.type === "product") {
-      // Get the product details including pdf_url
-      const productData = await client.query(
-        `SELECT p.ebook_url 
-         FROM products p
-         JOIN order_items oi ON p.id = oi.product_id
-         WHERE oi.order_id = $1`,
-        [orderData.id]
-      );
-      itemUrl = productData.rows[0]?.ebook_url;
-    } else {
-      // Get course access URL
-      const courseData = await client.query(
-        `SELECT c.id, c.title
-         FROM c_courses c
-         JOIN c_enrollments e ON c.id = e.course_id
-         WHERE e.user_id = (SELECT id FROM users WHERE email = $1)
-         AND e.status = 'pending'
-         ORDER BY e.created_at DESC
-         LIMIT 1`,
-        [orderData.email]
-      );
-
-      if (courseData.rows[0]) {
-        // Update enrollment status to active
-        await client.query(
-          `UPDATE c_enrollments 
-           SET status = 'active' 
-           WHERE course_id = $1 AND user_id = (SELECT id FROM users WHERE email = $2)`,
-          [courseData.rows[0].id, orderData.email]
+    try {
+      if (orderData.type === "product") {
+        // Pastikan order_items sudah ada, jika belum buat
+        const itemCheck = await client.query(
+          `SELECT * FROM order_items WHERE order_id = $1`,
+          [orderData.id]
         );
-        itemUrl = `/course/${courseData.rows[0].id}`;
-
-        // Create user account if it doesn't exist
-        const userExists = await client.query(
+        if (itemCheck.rows.length === 0) {
+          // Asumsi quantity = 1, total_amount = orderData.total_amount
+          await createProductOrderItems(
+            orderData.id,
+            orderData.itemid || orderData.itemId,
+            1,
+            orderData.total_amount
+          );
+        }
+        // Get the product details including pdf_url
+        const productData = await client.query(
+          `SELECT p.ebook_url 
+           FROM products p
+           JOIN order_items oi ON p.id = oi.product_id
+           WHERE oi.order_id = $1`,
+          [orderData.id]
+        );
+        itemUrl = productData.rows[0]?.ebook_url || "";
+      } else {
+        // Pastikan c_enrollments sudah ada, jika belum buat
+        const userRes = await client.query(
           `SELECT id FROM users WHERE email = $1`,
           [orderData.email]
         );
-
-        if (userExists.rows.length === 0) {
-          // Create new user with email as username and password
+        const userId = userRes.rows[0]?.id;
+        const enrollCheck = await client.query(
+          `SELECT * FROM c_enrollments WHERE course_id = $1 AND user_id = $2`,
+          [orderData.itemid || orderData.itemId, userId]
+        );
+        if (enrollCheck.rows.length === 0) {
+          await createCourseEnrollment(
+            orderData.itemid || orderData.itemId,
+            userId,
+            "active",
+            orderData.total_amount
+          );
+        } else {
+          // Update status ke active jika belum
           await client.query(
-            `INSERT INTO users (name, email, password, role)
-             VALUES ($1, $2, $3, $4)`,
-            [orderData.name, orderData.email, orderData.email, "student"]
+            `UPDATE c_enrollments SET status = 'active' WHERE course_id = $1 AND user_id = $2`,
+            [orderData.itemid || orderData.itemId, userId]
           );
         }
+        // Get course access URL (ambil enrollment terbaru user untuk course ini)
+        const courseData = await client.query(
+          `SELECT c.id, c.title
+           FROM c_courses c
+           JOIN c_enrollments e ON c.id = e.course_id
+           WHERE e.user_id = $1 AND c.id = $2
+           ORDER BY e.created_at DESC
+           LIMIT 1`,
+          [userId, orderData.itemid || orderData.itemId]
+        );
+        if (courseData.rows[0]) {
+          itemUrl = `/course/${courseData.rows[0].id}`;
+        } else {
+          itemUrl = "/course";
+        }
       }
+
+      const htmlContent = generateEmailTemplate(
+        orderData.name,
+        itemUrl,
+        orderData.type
+      );
+
+      await SendEmail({
+        email: orderData.email,
+        subject: `Pembayaran Berhasil - Akses ${
+          orderData.type === "product" ? "Produk" : "Kursus"
+        }`,
+        message: htmlContent,
+      });
+      emailSent = true;
+    } catch (err) {
+      console.error("Gagal mengirim email settlement:", err);
     }
 
-    const htmlContent = generateEmailTemplate(
-      orderData.name,
-      itemUrl,
-      orderData.type
-    );
-
-    await SendEmail({
-      email: orderData.email,
-      subject: `Pembayaran Berhasil - Akses ${
-        orderData.type === "product" ? "Produk" : "Kursus"
-      }`,
-      message: htmlContent,
-    });
+    if (!emailSent) {
+      // Log jika email tidak terkirim
+      console.error(
+        `Email settlement TIDAK TERKIRIM ke ${orderData.email} untuk order ${orderid}`
+      );
+    }
   }
 };
 
