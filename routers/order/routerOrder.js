@@ -219,6 +219,14 @@ const updateStatusOrder = async (status, orderid) => {
     [status, orderid]
   );
 
+  // Tambahkan pengecekan jika order tidak ditemukan
+  if (!result.rows[0]) {
+    console.error(
+      `Order with order_code ${orderid} not found. Status update aborted.`
+    );
+    return;
+  }
+
   // Send email when status is settlement
   if (status === "settlement") {
     const orderData = result.rows[0];

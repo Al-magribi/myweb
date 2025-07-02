@@ -34,6 +34,7 @@ router.post("/register", async (req, res) => {
     res.status(201).json({ message: "Pendaftaran berhasil", user });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -82,6 +83,7 @@ router.get("/load-user", authorize("user", "admin"), (req, res) => {
     res.status(200).json(req.user);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: error.message });
   }
 });
 

@@ -18,7 +18,7 @@ router.post("/create-review", async (req, res) => {
     }
 
     await client.query(
-      `INSERT INTO reviews (name, rating, comment, producti_d)
+      `INSERT INTO reviews (name, rating, comment, product_id)
     VALUES ($1, $2, $3, $4)`,
       [name, rating, reviewComment, productId]
     );
